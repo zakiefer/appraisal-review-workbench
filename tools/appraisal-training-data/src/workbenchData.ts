@@ -8,6 +8,7 @@ export interface ReviewWorkbenchOptions {
   reviewPackets: string;
   conflictAudit: string;
   output: string;
+  repairs?: string;
   workspaceRoot?: string;
 }
 
@@ -25,6 +26,7 @@ export interface WorkbenchState {
     mapping_review: string | null;
     mapping_validation: string | null;
     approved_export: string | null;
+    case_repairs: string | null;
   };
   pipeline: {
     run_id: string | null;
@@ -98,6 +100,9 @@ export interface WorkbenchState {
     needs_revision_cases: number;
     parser_warning_cases: number;
     adjusted_attention_rows: number;
+    repair_overlay_cases: number;
+    applied_repair_entries: number;
+    needs_mapping_entries: number;
     top_blockers: Array<{ blocker: string; count: number }>;
   };
   export: {
@@ -159,6 +164,7 @@ export async function buildWorkbenchState(
     path.join(workspaceRoot, "private", "approved-training-export"),
     path.join(workspaceRoot, "private", "approved-training-export-empty")
   ]);
+  const repairFolder = path.resolve(options.repairs ?? path.join(options.output, "case_repairs"));
 
   const mappingFileJson = mappingFile ? (asRecord(await readJsonIfExists(mappingFile)) as unknown as LocalFieldMappingFile) : null;
   const verifiedMappings = summarizeVerifiedMappings(mappingFileJson);
@@ -192,6 +198,7 @@ export async function buildWorkbenchState(
   ]);
 
   const packetFiles = await countReviewPacketFiles(options.reviewPackets);
+  const repairSummary = await summarizeCaseRepairs(repairFolder);
   const warningsByType = warningEntries(asRecord(manifest?.warnings_by_type));
   const manifestCounts = asRecord(manifest?.counts);
   const xmlFilesFound = numberOrNull(manifestCounts?.xml_files_found);
@@ -207,7 +214,8 @@ export async function buildWorkbenchState(
     mapping_file: mappingFile,
     mapping_review: mappingReviewOutput,
     mapping_validation: mappingValidationOutput,
-    approved_export: approvedExportOutput
+    approved_export: approvedExportOutput,
+    case_repairs: repairFolder
   };
 
   const state: WorkbenchState = {
@@ -250,6 +258,9 @@ export async function buildWorkbenchState(
       needs_revision_cases: progress.needs_revision,
       parser_warning_cases: warningsByType.reduce((sum, item) => sum + (item.warning.includes("parse") ? item.count : 0), 0),
       adjusted_attention_rows: progress.adjusted_price_rows_needing_attention,
+      repair_overlay_cases: repairSummary.cases,
+      applied_repair_entries: repairSummary.applied,
+      needs_mapping_entries: repairSummary.needsMapping,
       top_blockers: warningsByType.slice(0, 8).map((item) => ({ blocker: item.warning, count: item.count }))
     },
     export: {
@@ -458,6 +469,23 @@ async function countReviewPacketFiles(folder: string): Promise<number> {
     return files.filter((file) => file.endsWith(".review.json")).length;
   } catch {
     return 0;
+  }
+}
+
+async function summarizeCaseRepairs(folder: string): Promise<{ cases: number; applied: number; needsMapping: number }> {
+  try {
+    const files = (await listFilesRecursive(path.resolve(folder))).filter((file) => file.endsWith(".repair.json"));
+    let applied = 0;
+    let needsMapping = 0;
+    for (const file of files) {
+      const parsed = asRecord(await readJsonIfExists(file));
+      const repairs = asRecordArray(parsed?.repairs);
+      applied += repairs.filter((repair) => repair.status === "applied" || repair.status == null).length;
+      needsMapping += repairs.filter((repair) => repair.status === "needs_mapping").length;
+    }
+    return { cases: files.length, applied, needsMapping };
+  } catch {
+    return { cases: 0, applied: 0, needsMapping: 0 };
   }
 }
 

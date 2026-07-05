@@ -292,6 +292,7 @@ export interface CliOptions {
   allowUnredactedOutput?: boolean;
   emitReviewPackets?: boolean;
   mapping?: string | null;
+  repairs?: string | null;
   targetTier?: TargetTier;
   adjustedPriceConflictPolicy?: AdjustedPriceConflictPolicy;
 }

@@ -15,6 +15,7 @@ import { runCli } from "../src/cli.js";
 import { runFieldDiscovery } from "../src/discoverFields.js";
 import { toJsonlTrainingLine, exportJsonl } from "../src/exportJsonl.js";
 import { runApprovedExport } from "../src/exportApproved.js";
+import { stableCaseId } from "../src/fileUtils.js";
 import { mergeGridComparable, normalizeGridLabel } from "../src/gridExtract.js";
 import { loadLocalFieldMappings } from "../src/localMapping.js";
 import { buildManifest } from "../src/manifest.js";
@@ -811,6 +812,39 @@ describe("appraisal XML training data pipeline", () => {
     );
   });
 
+  it("applies case repair overlays before missing-field validation", () => {
+    const sourcePath = "tier-one-repaired.xml";
+    const normalized = validateNormalizedCase(
+      redactCase(
+        normalizeParsedXml(parseXml(tierOneOnlyXml), sourcePath, new Date("2026-01-01T00:00:00.000Z"), {
+          caseRepair: {
+            version: 1,
+            case_id: stableCaseId(sourcePath),
+            source_file_id: null,
+            reviewer: "Test",
+            updated_at: "2026-01-01T00:00:00.000Z",
+            repairs: [
+              { target: "subject.condition", value: "C4", status: "applied" },
+              { target: "subject.quality", value: "Q4", status: "applied" },
+              { target: "comparables.gla_sqft", comp_index: 1, value: "1,650 sf", status: "applied" },
+              { target: "reconciliation.narrative", value: "Synthetic repaired reconciliation.", status: "ignored" }
+            ]
+          }
+        }),
+        true
+      )
+    );
+
+    expect(normalized.subject.condition).toBe("C4");
+    expect(normalized.subject.quality).toBe("Q4");
+    expect(normalized.comparables[0]?.gla_sqft).toBe(1650);
+    expect(normalized.reconciliation.narrative).toBe("Synthetic tier one reconciliation.");
+    expect(normalized.quality_flags.missing_fields).not.toContain("missing_subject_condition");
+    expect(normalized.quality_flags.missing_fields).not.toContain("missing_subject_quality");
+    expect(normalized.quality_flags.missing_fields).not.toContain("missing_comparable_gla");
+    expect(normalized.quality_flags.parser_notes).toContain("repair_overlay_applied_subject_condition");
+  });
+
   it("tier 3 needs review when candidate and rejected comp pool is missing", async () => {
     const normalized = await loadCase(gridFixture);
     expect(normalized.quality_flags.tier_status.tier_3_comp_selection).toBe("needs_review");
@@ -841,6 +875,55 @@ describe("appraisal XML training data pipeline", () => {
     expect(JSON.parse(lines[0]!).metadata.quality_status).toBe("candidate");
     expect(manifest.target_tier).toBe("tier1");
     expect(manifest.tier_counts.tier_1_reconciliation_explanation.candidate).toBe(1);
+  });
+
+  it("CLI --repairs applies saved case repair overlays", async () => {
+    const tempInput = await mkdtemp(path.join(os.tmpdir(), "repair-input-"));
+    const tempOutput = await mkdtemp(path.join(os.tmpdir(), "repair-output-"));
+    const tempRepairs = await mkdtemp(path.join(os.tmpdir(), "repair-overlays-"));
+    const xmlPath = path.join(tempInput, "sample.xml");
+    await writeFile(xmlPath, tierOneOnlyXml, "utf8");
+    const caseId = stableCaseId(xmlPath);
+    await writeFile(
+      path.join(tempRepairs, `${caseId}.repair.json`),
+      JSON.stringify(
+        {
+          version: 1,
+          case_id: caseId,
+          source_file_id: "sample.xml",
+          reviewer: "Test",
+          updated_at: "2026-01-01T00:00:00.000Z",
+          repairs: [
+            { target: "subject.condition", value: "C3", status: "applied" },
+            { target: "subject.quality", value: "Q4", status: "applied" },
+            { target: "comparables.gla_sqft", comp_index: 1, value: "1700", status: "applied" },
+            { target: "comparables.adjusted_sale_price", comp_index: 1, value: "$106,000", status: "applied" },
+            { target: "parser.path_selection", status: "needs_mapping", note: "Synthetic mapping task." }
+          ]
+        },
+        null,
+        2
+      ),
+      "utf8"
+    );
+
+    await runCli({
+      input: tempInput,
+      output: tempOutput,
+      evalRatio: 0,
+      seed: 42,
+      redact: true,
+      includeNeedsReview: true,
+      repairs: tempRepairs
+    });
+
+    const normalized = JSON.parse(await readFile(path.join(tempOutput, "normalized", `${caseId}.json`), "utf8"));
+    expect(normalized.subject.condition).toBe("C3");
+    expect(normalized.subject.quality).toBe("Q4");
+    expect(normalized.comparables[0].gla_sqft).toBe(1700);
+    expect(normalized.comparables[0].adjusted_sale_price).toBe(106000);
+    expect(normalized.quality_flags.parser_notes).toContain("repair_overlay_applied_4_fields");
+    expect(normalized.quality_flags.warnings).not.toContain("repair_overlay_unknown_target_parser_path_selection");
   });
 
   it("target tier 2 does not export cases missing tier 2 fields", async () => {

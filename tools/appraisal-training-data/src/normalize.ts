@@ -3,6 +3,7 @@ import {
   DEFAULT_ADJUSTED_PRICE_CONFLICT_POLICY,
   emptyAdjustedPriceConflictStats
 } from "./adjustedPricePolicy.js";
+import { applyCaseRepairOverlay, type CaseRepairOverlay } from "./caseRepairs.js";
 import type {
   AdjustedPriceConflictPolicy,
   AppraisalMetadata,
@@ -44,6 +45,7 @@ import {
 export interface NormalizeOptions {
   localFieldMappings?: VerifiedLocalMapping[];
   adjustedPriceConflictPolicy?: AdjustedPriceConflictPolicy;
+  caseRepair?: CaseRepairOverlay | null;
 }
 
 export function normalizeParsedXml(
@@ -119,6 +121,18 @@ export function normalizeParsedXml(
     adjustedPriceConflictStats = localMappingResult.adjustedPriceConflictStats;
     parserNotes.push(...localMappingResult.parserNotes);
     warningSeed.push(...localMappingResult.warnings);
+  }
+
+  if (options.caseRepair) {
+    const repairResult = applyCaseRepairOverlay(normalizedCase, options.caseRepair);
+    normalizedCase = repairResult.normalizedCase;
+    parserNotes.push(...repairResult.parserNotes);
+    warningSeed.push(...repairResult.warnings);
+    if (repairResult.appliedCount > 0) {
+      parserNotes.push(
+        `repair_overlay_applied_${repairResult.appliedCount}_field${repairResult.appliedCount === 1 ? "" : "s"}`
+      );
+    }
   }
 
   const missingFields = inferMissingFields(normalizedCase.subject, normalizedCase.comparables, normalizedCase.reconciliation);

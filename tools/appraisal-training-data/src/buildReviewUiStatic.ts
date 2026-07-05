@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import type { CaseRepairOverlay } from "./caseRepairs.js";
 import { buildStaticReviewUiHtml } from "./reviewUi.js";
 import type { ReviewUiCase, ReviewUiState } from "./reviewUiData.js";
 
@@ -27,7 +28,33 @@ function buildDemoPayload() {
   const state = buildDemoState();
   return {
     state,
-    workbench: buildDemoWorkbench(state)
+    workbench: buildDemoWorkbench(state),
+    repairs: buildDemoRepairs()
+  };
+}
+
+function buildDemoRepairs(): Record<string, CaseRepairOverlay> {
+  return {
+    demo_adjusted_rows: {
+      version: 1,
+      case_id: "demo_adjusted_rows",
+      source_file_id: "demo_synthetic_source",
+      reviewer: "Demo Reviewer",
+      updated_at: new Date("2026-07-05T00:00:00.000Z").toISOString(),
+      repairs: [
+        {
+          target: "comparables.adjusted_sale_price",
+          comp_index: 1,
+          value: "$230,420",
+          status: "applied",
+          reviewer: "Demo Reviewer",
+          note: "Synthetic example of a saved row-level repair.",
+          source: "static_demo",
+          created_at: new Date("2026-07-05T00:00:00.000Z").toISOString(),
+          updated_at: new Date("2026-07-05T00:00:00.000Z").toISOString()
+        }
+      ]
+    }
   };
 }
 
@@ -355,6 +382,9 @@ function buildDemoWorkbench(state: ReviewUiState) {
       needs_revision_cases: 0,
       adjusted_attention_rows: 1,
       parser_warning_cases: 2,
+      repair_overlay_cases: 1,
+      applied_repair_entries: 1,
+      needs_mapping_entries: 0,
       top_blockers: [
         { blocker: "missing selected comparables", count: 1 },
         { blocker: "adjusted sale price needs review", count: 1 }
@@ -379,6 +409,7 @@ function buildDemoWorkbench(state: ReviewUiState) {
       training_output: "Local private output only",
       review_batch: "Local private review batch only",
       session_output: "Browser localStorage in static demo",
+      case_repairs: "Browser localStorage in static demo",
       mapping_file: "Synthetic demo mappings",
       inspection_output: "Synthetic demo inspection",
       review_packets: "Synthetic demo packets",

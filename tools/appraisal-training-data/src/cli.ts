@@ -14,8 +14,10 @@ import {
   ensureDir,
   findXmlFiles,
   safeBasename,
+  stableCaseId,
   writeJson
 } from "./fileUtils.js";
+import { loadCaseRepairOverlays } from "./caseRepairs.js";
 import { loadLocalFieldMappings } from "./localMapping.js";
 import { buildManifest, buildWarningReport } from "./manifest.js";
 import { normalizeParsedXml } from "./normalize.js";
@@ -69,11 +71,15 @@ export async function runCli(options: CliOptions): Promise<void> {
   let parsedCount = 0;
   const previousCoverage = await readPreviousCoverage(path.join(options.output, "reports", "field_coverage.json"));
   const localFieldMappings = await loadLocalFieldMappings(options.mapping);
+  const repairOverlays = await loadCaseRepairOverlays(options.repairs);
 
   console.log(`Found ${xmlFiles.length} XML file(s). Redaction enabled: ${options.redact}`);
   if (localFieldMappings.length > 0) {
     console.log(`Loaded ${localFieldMappings.length} verified local field mapping(s).`);
     console.log(`Adjusted sale price conflict policy: ${adjustedPriceConflictPolicy}`);
+  }
+  if (repairOverlays.size > 0) {
+    console.log(`Loaded ${repairOverlays.size} case repair overlay(s).`);
   }
   if (options.redact && isUnderPrivateFolder(options.input)) {
     console.log("Processing private local XMLs. Do not commit input or generated output files. Redaction is enabled.");
@@ -92,7 +98,8 @@ export async function runCli(options: CliOptions): Promise<void> {
         redactCase(
           normalizeParsedXml(parsed, xmlPath, new Date(), {
             localFieldMappings,
-            adjustedPriceConflictPolicy
+            adjustedPriceConflictPolicy,
+            caseRepair: repairOverlays.get(stableCaseId(xmlPath)) ?? null
           }),
           options.redact
         )
@@ -208,6 +215,7 @@ export function parseArgs(args: string[]): CliOptions {
     allowUnredactedOutput: booleanArg(values, "allow-unredacted-output", false),
     emitReviewPackets: booleanArg(values, "emit-review-packets", false),
     mapping: stringArg(values, "mapping"),
+    repairs: stringArg(values, "repairs"),
     targetTier: targetTierArg(values, "target-tier", "overall"),
     adjustedPriceConflictPolicy: adjustedPriceConflictPolicyArg(values, "adjusted-price-conflict-policy")
   };

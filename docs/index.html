@@ -3264,6 +3264,36 @@
       font-weight: 800;
       line-height: 1.35;
     }
+    .repair-save-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .repair-save-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f7f9fb;
+      color: #536173;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .repair-save-chip.saved {
+      border-color: #b9dfc8;
+      background: var(--green-bg);
+      color: var(--green);
+    }
+    .repair-save-chip.mapping {
+      border-color: #ead28d;
+      background: var(--yellow-bg);
+      color: var(--yellow);
+    }
     .repair-issue-list {
       display: grid;
       gap: 10px;
@@ -3386,6 +3416,114 @@
       line-height: 1.35;
       overflow-wrap: anywhere;
       white-space: normal;
+    }
+    .repair-editor {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #cfd9e5;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+    .repair-editor-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .repair-editor-heading strong {
+      color: #1f2a37;
+      font-size: 13px;
+    }
+    .repair-editor-heading span {
+      color: #647084;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.3;
+    }
+    .repair-editor-grid {
+      display: grid;
+      grid-template-columns: minmax(190px, 1.2fr) 86px minmax(150px, 1fr) minmax(190px, 1fr);
+      gap: 8px;
+      align-items: start;
+    }
+    .repair-editor label,
+    .repair-note-line {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      color: #647084;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .repair-editor input,
+    .repair-editor select,
+    .repair-editor textarea {
+      width: 100%;
+      min-width: 0;
+      background: #ffffff;
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .repair-editor textarea {
+      min-height: 70px;
+      margin: 0;
+    }
+    .repair-saved-state {
+      display: grid;
+      gap: 3px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: #465466;
+      font-size: 12px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+    .repair-saved-state strong {
+      color: var(--ink);
+      font-size: 12px;
+    }
+    .repair-saved-state.applied {
+      border-left: 4px solid var(--green);
+      background: #fbfdfc;
+    }
+    .repair-saved-state.needs_mapping {
+      border-left: 4px solid #c78105;
+      background: #fffdf7;
+    }
+    .repair-saved-state.empty {
+      border-style: dashed;
+      color: #728095;
+    }
+    .repair-editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .repair-editor-actions button {
+      min-height: 32px;
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+    .repair-editor-message {
+      min-height: 16px;
+      margin: 0;
+      color: #647084;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .repair-editor-message[data-tone="good"] {
+      color: var(--green);
+    }
+    .repair-editor-message[data-tone="bad"] {
+      color: var(--red);
     }
     .repair-actions {
       display: grid;
@@ -3637,6 +3775,7 @@
       .decision-box-heading,
       .repair-issue-row,
       .repair-meta,
+      .repair-editor-grid,
       .button-meaning-grid,
       .button-meaning-grid.red,
       .case-utility-details {
@@ -3738,13 +3877,15 @@
   </main>
   <script>
     const sessionOutput = "./demo/review-session";
-    const followupCommands = {"apply_review_decisions":"npm run appraisal:apply-review-decisions -- \\\n  --review-packets ./demo/review-packets \\\n  --decisions demo/review-session/review_decisions.csv \\\n  --output ./private/reviewed-appraisal-cases","export_approved":"npm run appraisal:export-approved -- \\\n  --reviewed ./private/reviewed-appraisal-cases \\\n  --output ./private/approved-tier1-training-export \\\n  --eval-ratio 0.2 \\\n  --seed 42"};
-    const staticPayload = {"state":{"generated_at":"2026-07-05T00:00:00.000Z","cases":[{"case_id":"demo_missing_evidence","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"red","label":"Likely reject or needs fix","reasons":["No selected comparables were extracted.","No final value or reconciliation narrative was extracted."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["no_selected_comparables_were_extracted.","no_final_value_or_reconciliation_narrative_was_extracted."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"comps":[],"adjustment_sanity":[],"reconciliation":{"final_opinion_of_value":null,"narrative":null,"caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"missing_fields":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"market":{},"selected_comparables":[],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":null,"indicated_value_low":null,"indicated_value_high":null,"narrative":null},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_adjusted_rows","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"yellow","label":"Needs attention before approval","reasons":["One adjusted sale price row needs human checking."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["one_adjusted_sale_price_row_needs_human_checking."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"badge":"Filled missing"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":222000,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["local_mapping_conflict_comparables_adjusted_sale_price"],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":222000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_ready_case","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"green","label":"Likely approvable","reasons":["Candidate checks passed."]},"tier":{"tier1_status":"candidate","tier1_reasons":["candidate_checks_passed."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":307000,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":[],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":307000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false}],"progress":{"total":3,"reviewed":0,"approved":0,"needs_revision":0,"rejected":0,"skipped":0,"unreviewed":3,"green":1,"yellow":1,"red":1,"adjusted_price_rows_needing_attention":1},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0}},"workbench":{"generated_at":"2026-07-05T00:00:00.000Z","stages":[{"id":"overview","label":"Overview","status":"ready","detail":"Static demo loaded."},{"id":"intake","label":"Import","status":"ready","detail":"Synthetic cases only."},{"id":"mapping","label":"Mapping","status":"ready","detail":"Demo mappings verified."},{"id":"review","label":"Tier Review","status":"attention","detail":"Try the approval worksheet."},{"id":"repairs","label":"Repairs","status":"attention","detail":"Demo red/yellow cases available."},{"id":"export","label":"Export","status":"blocked","detail":"Local private export only."},{"id":"audit","label":"Audit","status":"ready","detail":"No private values in static demo."}],"intake":{"xml_files_found":3,"parsed":3,"parse_failures":0,"inspection_grid_rows":6,"safe_value_profile_rows":12},"mapping":{"verified_count":3,"verified_mappings":[{"field":"subject.condition","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Condition].Subject","notes":"Synthetic demo mapping"},{"field":"subject.quality","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Quality Rating].Subject","notes":"Synthetic demo mapping"},{"field":"comparables.adjusted_sale_price","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Adjusted Sale Price]","notes":"Synthetic demo mapping"}],"review_targets":[],"validation":{"parsed":3,"applications":[{"field":"comparables.adjusted_sale_price"}],"target_coverage":[{"field":"subject.condition","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"subject.quality","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"comparables.adjusted_sale_price","before_pct":67,"after_pct":100,"delta_pct":33}]}},"repairs":{"red_cases":1,"needs_revision_cases":0,"adjusted_attention_rows":1,"parser_warning_cases":2,"top_blockers":[{"blocker":"missing selected comparables","count":1},{"blocker":"adjusted sale price needs review","count":1}]},"export":{"train_lines":0,"eval_lines":0,"all_lines":0},"audit":{"privacy_total":0,"final_value_leakage_cases":0,"raw_xml_included":false,"privacy_sources":[{"name":"Static demo data","total":0}],"conflict_summary":{"adjusted_rows_needing_attention":1}},"pipeline":{"redaction_enabled":true,"adjusted_price_conflict_stats":{"policy":"static_demo"},"warnings_by_type":[{"warning":"synthetic_demo_warning","count":1}]},"review":{"decision_file":"Browser localStorage in static demo"},"paths":{"input_folder":"Synthetic demo data","training_output":"Local private output only","review_batch":"Local private review batch only","session_output":"Browser localStorage in static demo","mapping_file":"Synthetic demo mappings","inspection_output":"Synthetic demo inspection","review_packets":"Synthetic demo packets","approved_export":"Local private export only"}}};
+    const followupCommands = {"rerun_with_repairs":"npm run appraisal:training-data -- \\\n  --input ./private/appraisal-xmls-sample \\\n  --output ./private/appraisal-training-with-repairs \\\n  --eval-ratio 0.2 \\\n  --seed 42 \\\n  --redact true \\\n  --include-needs-review true \\\n  --emit-review-packets true \\\n  --repairs ./demo/review-session/case_repairs","apply_review_decisions":"npm run appraisal:apply-review-decisions -- \\\n  --review-packets ./demo/review-packets \\\n  --decisions demo/review-session/review_decisions.csv \\\n  --output ./private/reviewed-appraisal-cases","export_approved":"npm run appraisal:export-approved -- \\\n  --reviewed ./private/reviewed-appraisal-cases \\\n  --output ./private/approved-tier1-training-export \\\n  --eval-ratio 0.2 \\\n  --seed 42"};
+    const staticPayload = {"state":{"generated_at":"2026-07-05T00:00:00.000Z","cases":[{"case_id":"demo_missing_evidence","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"red","label":"Likely reject or needs fix","reasons":["No selected comparables were extracted.","No final value or reconciliation narrative was extracted."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["no_selected_comparables_were_extracted.","no_final_value_or_reconciliation_narrative_was_extracted."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"comps":[],"adjustment_sanity":[],"reconciliation":{"final_opinion_of_value":null,"narrative":null,"caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"missing_fields":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"market":{},"selected_comparables":[],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":null,"indicated_value_low":null,"indicated_value_high":null,"narrative":null},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_adjusted_rows","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"yellow","label":"Needs attention before approval","reasons":["One adjusted sale price row needs human checking."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["one_adjusted_sale_price_row_needs_human_checking."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"badge":"Filled missing"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":222000,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["local_mapping_conflict_comparables_adjusted_sale_price"],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":222000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_ready_case","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"green","label":"Likely approvable","reasons":["Candidate checks passed."]},"tier":{"tier1_status":"candidate","tier1_reasons":["candidate_checks_passed."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":307000,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":[],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":307000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false}],"progress":{"total":3,"reviewed":0,"approved":0,"needs_revision":0,"rejected":0,"skipped":0,"unreviewed":3,"green":1,"yellow":1,"red":1,"adjusted_price_rows_needing_attention":1},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0}},"workbench":{"generated_at":"2026-07-05T00:00:00.000Z","stages":[{"id":"overview","label":"Overview","status":"ready","detail":"Static demo loaded."},{"id":"intake","label":"Import","status":"ready","detail":"Synthetic cases only."},{"id":"mapping","label":"Mapping","status":"ready","detail":"Demo mappings verified."},{"id":"review","label":"Tier Review","status":"attention","detail":"Try the approval worksheet."},{"id":"repairs","label":"Repairs","status":"attention","detail":"Demo red/yellow cases available."},{"id":"export","label":"Export","status":"blocked","detail":"Local private export only."},{"id":"audit","label":"Audit","status":"ready","detail":"No private values in static demo."}],"intake":{"xml_files_found":3,"parsed":3,"parse_failures":0,"inspection_grid_rows":6,"safe_value_profile_rows":12},"mapping":{"verified_count":3,"verified_mappings":[{"field":"subject.condition","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Condition].Subject","notes":"Synthetic demo mapping"},{"field":"subject.quality","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Quality Rating].Subject","notes":"Synthetic demo mapping"},{"field":"comparables.adjusted_sale_price","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Adjusted Sale Price]","notes":"Synthetic demo mapping"}],"review_targets":[],"validation":{"parsed":3,"applications":[{"field":"comparables.adjusted_sale_price"}],"target_coverage":[{"field":"subject.condition","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"subject.quality","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"comparables.adjusted_sale_price","before_pct":67,"after_pct":100,"delta_pct":33}]}},"repairs":{"red_cases":1,"needs_revision_cases":0,"adjusted_attention_rows":1,"parser_warning_cases":2,"repair_overlay_cases":1,"applied_repair_entries":1,"needs_mapping_entries":0,"top_blockers":[{"blocker":"missing selected comparables","count":1},{"blocker":"adjusted sale price needs review","count":1}]},"export":{"train_lines":0,"eval_lines":0,"all_lines":0},"audit":{"privacy_total":0,"final_value_leakage_cases":0,"raw_xml_included":false,"privacy_sources":[{"name":"Static demo data","total":0}],"conflict_summary":{"adjusted_rows_needing_attention":1}},"pipeline":{"redaction_enabled":true,"adjusted_price_conflict_stats":{"policy":"static_demo"},"warnings_by_type":[{"warning":"synthetic_demo_warning","count":1}]},"review":{"decision_file":"Browser localStorage in static demo"},"paths":{"input_folder":"Synthetic demo data","training_output":"Local private output only","review_batch":"Local private review batch only","session_output":"Browser localStorage in static demo","case_repairs":"Browser localStorage in static demo","mapping_file":"Synthetic demo mappings","inspection_output":"Synthetic demo inspection","review_packets":"Synthetic demo packets","approved_export":"Local private export only"}},"repairs":{"demo_adjusted_rows":{"version":1,"case_id":"demo_adjusted_rows","source_file_id":"demo_synthetic_source","reviewer":"Demo Reviewer","updated_at":"2026-07-05T00:00:00.000Z","repairs":[{"target":"comparables.adjusted_sale_price","comp_index":1,"value":"$230,420","status":"applied","reviewer":"Demo Reviewer","note":"Synthetic example of a saved row-level repair.","source":"static_demo","created_at":"2026-07-05T00:00:00.000Z","updated_at":"2026-07-05T00:00:00.000Z"}]}}};
     const isStaticDemo = Boolean(staticPayload);
     const staticDecisionStorageKey = 'appraisalStaticDemoDecisions';
+    const staticRepairStorageKey = 'appraisalStaticDemoRepairs';
     const defaultReviewer = "Demo Reviewer";
     let state = null;
     let workbench = null;
+    let repairs = {};
     let index = 0;
     let activeView = isStaticDemo ? 'review' : 'overview';
     let queuePreference = localStorage.getItem('appraisalQueuePreference') || 'auto';
@@ -3801,16 +3942,22 @@
       if (isStaticDemo) {
         state = structuredClone(staticPayload.state);
         workbench = structuredClone(staticPayload.workbench);
+        repairs = {
+          ...(structuredClone(staticPayload.repairs || {})),
+          ...readStaticRepairs()
+        };
         applyStaticDecisions();
         render();
         return;
       }
-      const [stateRes, workbenchRes] = await Promise.all([
+      const [stateRes, workbenchRes, repairRes] = await Promise.all([
         fetch('/api/state'),
-        fetch('/api/workbench')
+        fetch('/api/workbench'),
+        fetch('/api/repairs')
       ]);
       state = await stateRes.json();
       workbench = await workbenchRes.json();
+      repairs = await repairRes.json();
       render();
     }
 
@@ -3827,6 +3974,21 @@
     function writeStaticDecisions(decisions) {
       if (!isStaticDemo) return;
       localStorage.setItem(staticDecisionStorageKey, JSON.stringify(decisions));
+    }
+
+    function readStaticRepairs() {
+      if (!isStaticDemo) return {};
+      try {
+        const parsed = JSON.parse(localStorage.getItem(staticRepairStorageKey) || '{}');
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStaticRepairs(nextRepairs) {
+      if (!isStaticDemo) return;
+      localStorage.setItem(staticRepairStorageKey, JSON.stringify(nextRepairs));
     }
 
     function applyStaticDecisions() {
@@ -4446,8 +4608,8 @@
           <div class="metric-grid">
             ${metricTile('Red cases', workbench?.repairs?.red_cases ?? 0, 'Likely reject or needs fix')}
             ${metricTile('Needs fix', workbench?.repairs?.needs_revision_cases ?? 0, 'Saved reviewer decisions')}
-            ${metricTile('Adjusted rows', workbench?.repairs?.adjusted_attention_rows ?? 0, 'Rows needing attention')}
-            ${metricTile('Parser warnings', workbench?.repairs?.parser_warning_cases ?? 0, 'Warning count in manifest')}
+            ${metricTile('Saved repairs', workbench?.repairs?.applied_repair_entries ?? Object.values(repairs || {}).reduce((sum, overlay) => sum + (overlay.repairs || []).filter(entry => (entry.status || 'applied') === 'applied').length, 0), 'Field overlays')}
+            ${metricTile('Needs mapping', workbench?.repairs?.needs_mapping_entries ?? Object.values(repairs || {}).reduce((sum, overlay) => sum + (overlay.repairs || []).filter(entry => entry.status === 'needs_mapping').length, 0), 'Parser or mapping queue')}
           </div>
           <div class="operator-grid">
             <section class="workbench-panel full-span">
@@ -4501,8 +4663,8 @@
             </section>
             <section class="workbench-panel full-span">
               <span class="panel-kicker">Commands</span>
-              <h2>Apply decisions, then export approved cases</h2>
-              ${commandPanel(followupCommands.apply_review_decisions + '\n\n' + followupCommands.export_approved)}
+              <h2>Re-run with repairs, apply decisions, then export</h2>
+              ${commandPanel(followupCommands.rerun_with_repairs + '\n\n' + followupCommands.apply_review_decisions + '\n\n' + followupCommands.export_approved)}
             </section>
           </div>
         </div>
@@ -4721,16 +4883,19 @@
       if (!cases.length) return '<div class="empty-state">No repair cases currently match the repair filters.</div>';
       return `
         <ul class="action-list">
-          ${cases.map(item => `
+          ${cases.map(item => {
+            const counts = repairOverlayCounts(item);
+            return `
             <li>
               <span class="status-dot ${escape(item.recommendation.level === 'red' ? 'blocked' : 'attention')}"></span>
               <div>
                 <strong>${escape(item.case_id)}</strong>
                 <small class="muted">${escape(item.recommendation.label)} · ${escape(humanizeList(item.missing_fields.slice(0, 3)))}</small>
+                <small class="muted">${escape(counts.applied)} saved field repair${counts.applied === 1 ? '' : 's'} · ${escape(counts.needsMapping)} mapping item${counts.needsMapping === 1 ? '' : 's'}</small>
               </div>
               <button class="case-link-button" onclick="openCase('${escape(item.case_id)}')">Open</button>
             </li>
-          `).join('')}
+          `;}).join('')}
         </ul>
       `;
     }
@@ -5112,6 +5277,198 @@
       };
     }
 
+    function directRepairTargets() {
+      return [
+        'subject.condition',
+        'subject.quality',
+        'subject.gla_sqft',
+        'subject.bedrooms',
+        'subject.bathrooms',
+        'subject.year_built',
+        'subject.site_size',
+        'subject.view',
+        'subject.design_style',
+        'subject.basement',
+        'subject.garage_carport',
+        'comparables.sale_price',
+        'comparables.sales_price_per_gla',
+        'comparables.sale_date',
+        'comparables.contract_date',
+        'comparables.gla_sqft',
+        'comparables.total_rooms',
+        'comparables.bedrooms',
+        'comparables.bathrooms',
+        'comparables.full_bathrooms',
+        'comparables.half_bathrooms',
+        'comparables.site_size',
+        'comparables.view',
+        'comparables.location',
+        'comparables.actual_age',
+        'comparables.year_built',
+        'comparables.condition',
+        'comparables.quality',
+        'comparables.design_style',
+        'comparables.basement_area_sqft',
+        'comparables.basement_finished_sqft',
+        'comparables.basement_description',
+        'comparables.basement_finish',
+        'comparables.garage_carport',
+        'comparables.garage_spaces',
+        'comparables.carport_spaces',
+        'comparables.porch_deck',
+        'comparables.fireplaces',
+        'comparables.sales_concessions',
+        'comparables.financing_concessions',
+        'comparables.net_adjustment',
+        'comparables.gross_adjustment',
+        'comparables.adjusted_sale_price',
+        'reconciliation.final_opinion_of_value',
+        'reconciliation.narrative'
+      ];
+    }
+
+    function isDirectRepairTarget(target) {
+      return String(target || '').startsWith('subject.') ||
+        String(target || '').startsWith('comparables.') ||
+        String(target || '').startsWith('reconciliation.');
+    }
+
+    function caseRepairOverlay(item) {
+      return repairs?.[item.case_id] || {
+        version: 1,
+        case_id: item.case_id,
+        source_file_id: item.source_file_id || null,
+        reviewer: null,
+        updated_at: null,
+        repairs: []
+      };
+    }
+
+    function repairKey(target, compIndex) {
+      return `${target}:${compIndex || ''}`;
+    }
+
+    function savedRepairFor(item, target, compIndex = '') {
+      const key = repairKey(target, compIndex);
+      return (caseRepairOverlay(item).repairs || []).find(repair => repairKey(repair.target, repair.comp_index || '') === key) || null;
+    }
+
+    function repairOverlayCounts(item) {
+      const entries = caseRepairOverlay(item).repairs || [];
+      return {
+        total: entries.length,
+        applied: entries.filter(entry => (entry.status || 'applied') === 'applied').length,
+        needsMapping: entries.filter(entry => entry.status === 'needs_mapping').length,
+        ignored: entries.filter(entry => entry.status === 'ignored').length
+      };
+    }
+
+    function repairOverlaySummary(item) {
+      const counts = repairOverlayCounts(item);
+      if (counts.total === 0) return '<span class="repair-save-chip empty">No saved repairs yet</span>';
+      return `
+        <span class="repair-save-chip saved">${escape(counts.applied)} field fix${counts.applied === 1 ? '' : 'es'} saved</span>
+        <span class="repair-save-chip mapping">${escape(counts.needsMapping)} mapping item${counts.needsMapping === 1 ? '' : 's'}</span>
+      `;
+    }
+
+    function defaultCompIndex(item, repair) {
+      if (!String(repair.target || '').startsWith('comparables.')) return '';
+      const attention = item.comps.filter(comp => comp.needs_manual_attention);
+      if (attention.length === 1 && repair.target === 'comparables.adjusted_sale_price') return attention[0].comp_index;
+      if (item.comps.length === 1) return item.comps[0].comp_index;
+      return '';
+    }
+
+    function fieldValueForTarget(item, target, compIndex = '') {
+      if (!isDirectRepairTarget(target)) return null;
+      if (target.startsWith('subject.')) return (item.subject || {})[target.slice('subject.'.length)] ?? null;
+      if (target.startsWith('reconciliation.')) return (item.reconciliation || {})[target.slice('reconciliation.'.length)] ?? null;
+      if (target.startsWith('comparables.')) {
+        const indexNumber = Number(compIndex);
+        const comp = item.comps.find(candidate => Number(candidate.comp_index) === indexNumber);
+        return comp ? comp[target.slice('comparables.'.length)] ?? null : null;
+      }
+      return null;
+    }
+
+    function repairTargetOptions(selectedTarget) {
+      const targets = directRepairTargets();
+      const selected = String(selectedTarget || '');
+      const withSelected = targets.includes(selected) || !selected ? targets : [selected, ...targets];
+      return withSelected.map(target => `
+        <option value="${escape(target)}" ${target === selected ? 'selected' : ''}>${escape(target)}</option>
+      `).join('');
+    }
+
+    function repairValueControl(target, value) {
+      if (String(target || '').endsWith('.narrative')) {
+        return `<textarea data-repair-value placeholder="Paste or type the corrected narrative.">${escape(value || '')}</textarea>`;
+      }
+      const type = String(target || '').includes('date') ? 'date' : 'text';
+      return `<input data-repair-value type="${type}" value="${escape(value || '')}" placeholder="Correct value">`;
+    }
+
+    function savedRepairMarkup(saved) {
+      if (!saved) return '<div class="repair-saved-state empty">No saved repair for this exact field yet.</div>';
+      const status = saved.status || 'applied';
+      const valueText = saved.value == null || saved.value === '' ? 'No value saved' : String(saved.value);
+      return `
+        <div class="repair-saved-state ${escape(status)}">
+          <strong>${escape(status === 'needs_mapping' ? 'Saved as mapping/parser work' : 'Saved repair')}</strong>
+          <span>${escape(valueText)}</span>
+          ${saved.note ? `<small>${escape(saved.note)}</small>` : ''}
+        </div>
+      `;
+    }
+
+    function repairEditor(item, repair, repairIndex) {
+      const compIndex = defaultCompIndex(item, repair);
+      const saved = savedRepairFor(item, repair.target, compIndex);
+      const currentValue = fieldValueForTarget(item, repair.target, saved?.comp_index || compIndex);
+      const savedValue = saved?.value ?? '';
+      const direct = isDirectRepairTarget(repair.target);
+      return `
+        <div class="repair-editor" data-repair-index="${escape(repairIndex)}" data-case-id="${escape(item.case_id)}">
+          <div class="repair-editor-heading">
+            <strong>Fix this item</strong>
+            <span>${direct ? 'Save a corrected extracted value, or mark it as parser/mapping work.' : 'This needs parser/mapping work before it can be a field value.'}</span>
+          </div>
+          <div class="repair-editor-grid">
+            <label>
+              <span>Field</span>
+              <select data-repair-target>
+                ${repairTargetOptions(repair.target)}
+              </select>
+            </label>
+            <label>
+              <span>Comp #</span>
+              <input data-repair-comp-index value="${escape(saved?.comp_index || compIndex || '')}" placeholder="Only for comparable fields">
+            </label>
+            <label>
+              <span>Current extracted value</span>
+              <input value="${escape(fmt(currentValue))}" readonly>
+            </label>
+            <label class="repair-value-cell">
+              <span>Correct value</span>
+              ${repairValueControl(repair.target, savedValue)}
+            </label>
+          </div>
+          <label class="repair-note-line">
+            <span>Repair note</span>
+            <input data-repair-note value="${escape(saved?.note || repair.next || '')}" placeholder="Why this is the right fix, or what mapping is needed">
+          </label>
+          ${savedRepairMarkup(saved)}
+          <div class="repair-editor-actions">
+            <button type="button" class="primary" onclick="saveRepair(this, 'applied')">Save field repair</button>
+            <button type="button" onclick="saveRepair(this, 'needs_mapping')">Needs parser or mapping</button>
+            <button type="button" data-note-template="${escape('Needs Fix: ' + repair.title + ' - ' + repair.next)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add to decision note</button>
+          </div>
+          <p class="repair-editor-message" aria-live="polite"></p>
+        </div>
+      `;
+    }
+
     function repairPlanPanel(item, issues) {
       const repairs = repairPlanItems(item);
       if (!repairs.length) {
@@ -5131,9 +5488,10 @@
             <span>What needs fixing</span>
             <h2>${escape(repairs.length)} issue${repairs.length === 1 ? '' : 's'} to resolve before approval</h2>
             <p>Each row is a separate repair question. Needs Fix sends this case to the repair queue; it is not approval.</p>
+            <div class="repair-save-summary">${repairOverlaySummary(item)}</div>
           </div>
           <div class="repair-issue-list">
-            ${repairs.map((repair, repairIndex) => repairIssueRow(repair, repairIndex)).join('')}
+            ${repairs.map((repair, repairIndex) => repairIssueRow(item, repair, repairIndex)).join('')}
           </div>
           <details class="raw-problems">
             <summary>Show raw parser warnings</summary>
@@ -5147,9 +5505,8 @@
       `;
     }
 
-    function repairIssueRow(repair, repairIndex) {
+    function repairIssueRow(item, repair, repairIndex) {
       const signal = mappingSignal(repair.target || '');
-      const note = `Needs Fix: ${repair.title} - ${repair.next}`;
       return `
         <article class="repair-issue-row ${escape(signal.tone)}">
           <div class="repair-issue-number">${escape(repairIndex + 1)}</div>
@@ -5168,12 +5525,12 @@
               <span>${escape(signal.label)}</span>
               <code>${escape(signal.path || signal.detail)}</code>
             </div>
+            ${repairEditor(item, repair, repairIndex)}
           </div>
           <div class="repair-actions">
             <button type="button" onclick="openEvidenceDrawer()">Evidence</button>
             <button type="button" onclick="setView('mapping')">Mapping</button>
             <button type="button" onclick="setView('repairs')">Repairs</button>
-            <button type="button" data-note-template="${escape(note)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add note</button>
           </div>
         </article>
       `;
@@ -5504,7 +5861,9 @@
 
               <details class="rail-details">
                 <summary>Apply and export commands</summary>
-                <h3>Apply decisions</h3>
+                <h3>Re-run training data with saved repairs</h3>
+                ${commandPanel(followupCommands.rerun_with_repairs)}
+                <h3>Apply review gate</h3>
                 ${commandPanel(followupCommands.apply_review_decisions)}
                 <h3>Export approved JSONL</h3>
                 ${commandPanel(followupCommands.export_approved)}
@@ -5786,6 +6145,115 @@
     async function refreshAndRender() {
       await refreshWorkbench();
       render();
+    }
+
+    function setRepairMessage(editor, text, tone = '') {
+      const message = editor.querySelector('.repair-editor-message');
+      if (!message) return;
+      message.textContent = text;
+      message.dataset.tone = tone;
+    }
+
+    function upsertStaticRepair(body) {
+      const now = new Date().toISOString();
+      const overlay = repairs[body.case_id] || {
+        version: 1,
+        case_id: body.case_id,
+        source_file_id: body.source_file_id || null,
+        reviewer: body.reviewer || null,
+        updated_at: now,
+        repairs: []
+      };
+      const key = repairKey(body.target, body.comp_index || '');
+      const nextEntry = {
+        target: body.target,
+        comp_index: body.comp_index || null,
+        value: body.value ?? null,
+        status: body.status || 'applied',
+        reviewer: body.reviewer || null,
+        note: body.note || null,
+        source: body.source || 'static_demo',
+        created_at: now,
+        updated_at: now
+      };
+      overlay.repairs = [...(overlay.repairs || []).filter(entry => repairKey(entry.target, entry.comp_index || '') !== key), nextEntry]
+        .sort((a, b) => repairKey(a.target, a.comp_index || '').localeCompare(repairKey(b.target, b.comp_index || '')));
+      overlay.updated_at = now;
+      overlay.reviewer = body.reviewer || overlay.reviewer || null;
+      repairs = { ...repairs, [body.case_id]: overlay };
+      writeStaticRepairs(repairs);
+    }
+
+    async function saveRepair(button, status) {
+      const editor = button.closest('.repair-editor');
+      const item = currentCase();
+      if (!editor || !item) return;
+      const target = editor.querySelector('[data-repair-target]')?.value?.trim() || '';
+      const compRaw = editor.querySelector('[data-repair-comp-index]')?.value?.trim() || '';
+      const valueRaw = editor.querySelector('[data-repair-value]')?.value?.trim() || '';
+      const note = editor.querySelector('[data-repair-note]')?.value?.trim() || '';
+      const reviewer = document.getElementById('reviewer').value.trim() || defaultReviewer;
+      const direct = isDirectRepairTarget(target);
+      if (!target) {
+        setRepairMessage(editor, 'Choose the field this repair is about.', 'bad');
+        return;
+      }
+      if (status === 'applied' && !direct) {
+        setRepairMessage(editor, 'Choose a subject, comparable, or reconciliation field before saving a field repair.', 'bad');
+        return;
+      }
+      if (target.startsWith('comparables.') && !compRaw) {
+        setRepairMessage(editor, 'Enter the comp number for comparable repairs.', 'bad');
+        return;
+      }
+      if (status === 'applied' && !valueRaw) {
+        setRepairMessage(editor, 'Enter the corrected value before saving a field repair.', 'bad');
+        return;
+      }
+      const body = {
+        case_id: item.case_id,
+        source_file_id: item.source_file_id || null,
+        target,
+        comp_index: compRaw ? Number(compRaw) : null,
+        value: status === 'applied' ? valueRaw : null,
+        status,
+        reviewer,
+        note: note || (status === 'needs_mapping' ? `Needs parser or mapping work for ${target}.` : null),
+        source: 'review_ui'
+      };
+      if (body.comp_index != null && (!Number.isFinite(body.comp_index) || body.comp_index < 1)) {
+        setRepairMessage(editor, 'Comp number must be 1 or higher.', 'bad');
+        return;
+      }
+      button.disabled = true;
+      setRepairMessage(editor, 'Saving...', '');
+      try {
+        if (isStaticDemo) {
+          upsertStaticRepair(body);
+          setRepairMessage(editor, 'Saved in this browser demo.', 'good');
+          renderCase();
+          return;
+        }
+        const res = await fetch('/api/repair', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(body)
+        });
+        const payload = await res.json();
+        if (!res.ok) {
+          setRepairMessage(editor, payload.error || 'Repair save failed.', 'bad');
+          return;
+        }
+        repairs = payload.repairs || repairs;
+        state = payload.state || state;
+        await refreshWorkbench();
+        setRepairMessage(editor, 'Saved repair overlay.', 'good');
+        renderCase();
+      } catch (error) {
+        setRepairMessage(editor, error instanceof Error ? error.message : String(error), 'bad');
+      } finally {
+        button.disabled = false;
+      }
     }
 
     async function saveDecision(status) {

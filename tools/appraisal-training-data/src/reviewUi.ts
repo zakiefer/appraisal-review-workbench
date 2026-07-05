@@ -2,6 +2,12 @@ import { readFile, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import {
+  loadCaseRepairOverlays,
+  upsertCaseRepairEntry,
+  type CaseRepairEntry,
+  type CaseRepairOverlay
+} from "./caseRepairs.js";
 import { assertReadableDirectory, assertWritableOutput, ensureDir, writeJson } from "./fileUtils.js";
 import { assertPrivateOutput, loadAdjustedPriceAuditDetails, loadReviewPackets, parseDecisionCsv } from "./reviewWorkflow.js";
 import {
@@ -22,6 +28,7 @@ interface ReviewUiOptions {
   reviewPackets: string;
   conflictAudit: string;
   output: string;
+  repairs: string;
   port: number;
 }
 
@@ -34,6 +41,7 @@ interface ReviewUiRuntime {
 interface StaticReviewUiPayload {
   state: ReviewUiState;
   workbench: unknown;
+  repairs?: Record<string, CaseRepairOverlay>;
 }
 
 async function main(): Promise<void> {
@@ -68,8 +76,10 @@ export async function initializeReviewUi(options: ReviewUiOptions): Promise<Revi
   await assertReadableDirectory(options.reviewPackets);
   await assertReadableDirectory(options.conflictAudit);
   assertPrivateOutput(options.output, "Review UI session");
+  assertPrivateOutput(options.repairs, "Case repair overlays");
   await assertWritableOutput(options.output);
   await ensureDir(options.output);
+  await ensureDir(options.repairs);
 
   const packets = await loadReviewPackets(options.reviewPackets);
   const decisions = await loadInitialDecisions(options);
@@ -113,6 +123,37 @@ async function handleRequest(runtime: ReviewUiRuntime, request: IncomingMessage,
       sendJson(response, await buildWorkbenchState(runtime.options, state.progress, state.privacy));
       return;
     }
+    if (request.method === "GET" && url.pathname === "/api/repairs") {
+      sendJson(response, await repairOverlayRecord(runtime.options.repairs));
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/repair") {
+      const body = (await readJsonBody(request)) as CaseRepairEntry & {
+        case_id?: string;
+        source_file_id?: string | null;
+      };
+      if (!body.case_id || !runtime.caseIds.includes(body.case_id)) {
+        sendJson(response, { error: "Unknown case_id for this review batch." }, 400);
+        return;
+      }
+      if (!body.target || typeof body.target !== "string") {
+        sendJson(response, { error: "Repair target is required." }, 400);
+        return;
+      }
+      const overlay = await upsertCaseRepairEntry(runtime.options.repairs, {
+        ...body,
+        case_id: body.case_id,
+        source_file_id: body.source_file_id ?? null
+      });
+      const state = await loadState(runtime);
+      await writeSessionFiles(runtime, state);
+      sendJson(response, {
+        overlay,
+        repairs: await repairOverlayRecord(runtime.options.repairs),
+        state
+      });
+      return;
+    }
     if (request.method === "POST" && url.pathname === "/api/decision") {
       const body = (await readJsonBody(request)) as ReviewDecisionDraft;
       const decision = normalizeDecisionDraft(body);
@@ -152,6 +193,7 @@ async function writeSessionFiles(runtime: ReviewUiRuntime, state: Awaited<Return
     review_packets: path.resolve(runtime.options.reviewPackets),
     conflict_audit: path.resolve(runtime.options.conflictAudit),
     output: path.resolve(output),
+    case_repairs: path.resolve(runtime.options.repairs),
     local_url: `http://localhost:${runtime.options.port}`,
     commands: buildFollowupCommands(runtime.options),
     cases: state.progress.total,
@@ -222,10 +264,16 @@ export function buildStaticReviewUiHtml(payload: StaticReviewUiPayload): string 
       reviewPackets: "./demo/review-packets",
       conflictAudit: "./demo/conflict-audit",
       output: "./demo/review-session",
+      repairs: "./demo/review-session/case_repairs",
       port: 0
     },
     payload
   );
+}
+
+async function repairOverlayRecord(repairFolder: string): Promise<Record<string, CaseRepairOverlay>> {
+  const overlays = await loadCaseRepairOverlays(repairFolder);
+  return Object.fromEntries([...overlays.entries()].sort((a, b) => a[0].localeCompare(b[0])));
 }
 
 function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayload | null = null): string {
@@ -3496,6 +3544,36 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       font-weight: 800;
       line-height: 1.35;
     }
+    .repair-save-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .repair-save-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f7f9fb;
+      color: #536173;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .repair-save-chip.saved {
+      border-color: #b9dfc8;
+      background: var(--green-bg);
+      color: var(--green);
+    }
+    .repair-save-chip.mapping {
+      border-color: #ead28d;
+      background: var(--yellow-bg);
+      color: var(--yellow);
+    }
     .repair-issue-list {
       display: grid;
       gap: 10px;
@@ -3618,6 +3696,114 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       line-height: 1.35;
       overflow-wrap: anywhere;
       white-space: normal;
+    }
+    .repair-editor {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #cfd9e5;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+    .repair-editor-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .repair-editor-heading strong {
+      color: #1f2a37;
+      font-size: 13px;
+    }
+    .repair-editor-heading span {
+      color: #647084;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.3;
+    }
+    .repair-editor-grid {
+      display: grid;
+      grid-template-columns: minmax(190px, 1.2fr) 86px minmax(150px, 1fr) minmax(190px, 1fr);
+      gap: 8px;
+      align-items: start;
+    }
+    .repair-editor label,
+    .repair-note-line {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      color: #647084;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .repair-editor input,
+    .repair-editor select,
+    .repair-editor textarea {
+      width: 100%;
+      min-width: 0;
+      background: #ffffff;
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .repair-editor textarea {
+      min-height: 70px;
+      margin: 0;
+    }
+    .repair-saved-state {
+      display: grid;
+      gap: 3px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: #465466;
+      font-size: 12px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+    .repair-saved-state strong {
+      color: var(--ink);
+      font-size: 12px;
+    }
+    .repair-saved-state.applied {
+      border-left: 4px solid var(--green);
+      background: #fbfdfc;
+    }
+    .repair-saved-state.needs_mapping {
+      border-left: 4px solid #c78105;
+      background: #fffdf7;
+    }
+    .repair-saved-state.empty {
+      border-style: dashed;
+      color: #728095;
+    }
+    .repair-editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .repair-editor-actions button {
+      min-height: 32px;
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+    .repair-editor-message {
+      min-height: 16px;
+      margin: 0;
+      color: #647084;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .repair-editor-message[data-tone="good"] {
+      color: var(--green);
+    }
+    .repair-editor-message[data-tone="bad"] {
+      color: var(--red);
     }
     .repair-actions {
       display: grid;
@@ -3869,6 +4055,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       .decision-box-heading,
       .repair-issue-row,
       .repair-meta,
+      .repair-editor-grid,
       .button-meaning-grid,
       .button-meaning-grid.red,
       .case-utility-details {
@@ -3974,9 +4161,11 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     const staticPayload = ${JSON.stringify(staticPayload)};
     const isStaticDemo = Boolean(staticPayload);
     const staticDecisionStorageKey = 'appraisalStaticDemoDecisions';
+    const staticRepairStorageKey = 'appraisalStaticDemoRepairs';
     const defaultReviewer = ${JSON.stringify(staticPayload ? "Demo Reviewer" : "Zachary")};
     let state = null;
     let workbench = null;
+    let repairs = {};
     let index = 0;
     let activeView = isStaticDemo ? 'review' : 'overview';
     let queuePreference = localStorage.getItem('appraisalQueuePreference') || 'auto';
@@ -4033,16 +4222,22 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (isStaticDemo) {
         state = structuredClone(staticPayload.state);
         workbench = structuredClone(staticPayload.workbench);
+        repairs = {
+          ...(structuredClone(staticPayload.repairs || {})),
+          ...readStaticRepairs()
+        };
         applyStaticDecisions();
         render();
         return;
       }
-      const [stateRes, workbenchRes] = await Promise.all([
+      const [stateRes, workbenchRes, repairRes] = await Promise.all([
         fetch('/api/state'),
-        fetch('/api/workbench')
+        fetch('/api/workbench'),
+        fetch('/api/repairs')
       ]);
       state = await stateRes.json();
       workbench = await workbenchRes.json();
+      repairs = await repairRes.json();
       render();
     }
 
@@ -4059,6 +4254,21 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     function writeStaticDecisions(decisions) {
       if (!isStaticDemo) return;
       localStorage.setItem(staticDecisionStorageKey, JSON.stringify(decisions));
+    }
+
+    function readStaticRepairs() {
+      if (!isStaticDemo) return {};
+      try {
+        const parsed = JSON.parse(localStorage.getItem(staticRepairStorageKey) || '{}');
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStaticRepairs(nextRepairs) {
+      if (!isStaticDemo) return;
+      localStorage.setItem(staticRepairStorageKey, JSON.stringify(nextRepairs));
     }
 
     function applyStaticDecisions() {
@@ -4678,8 +4888,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           <div class="metric-grid">
             \${metricTile('Red cases', workbench?.repairs?.red_cases ?? 0, 'Likely reject or needs fix')}
             \${metricTile('Needs fix', workbench?.repairs?.needs_revision_cases ?? 0, 'Saved reviewer decisions')}
-            \${metricTile('Adjusted rows', workbench?.repairs?.adjusted_attention_rows ?? 0, 'Rows needing attention')}
-            \${metricTile('Parser warnings', workbench?.repairs?.parser_warning_cases ?? 0, 'Warning count in manifest')}
+            \${metricTile('Saved repairs', workbench?.repairs?.applied_repair_entries ?? Object.values(repairs || {}).reduce((sum, overlay) => sum + (overlay.repairs || []).filter(entry => (entry.status || 'applied') === 'applied').length, 0), 'Field overlays')}
+            \${metricTile('Needs mapping', workbench?.repairs?.needs_mapping_entries ?? Object.values(repairs || {}).reduce((sum, overlay) => sum + (overlay.repairs || []).filter(entry => entry.status === 'needs_mapping').length, 0), 'Parser or mapping queue')}
           </div>
           <div class="operator-grid">
             <section class="workbench-panel full-span">
@@ -4733,8 +4943,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
             </section>
             <section class="workbench-panel full-span">
               <span class="panel-kicker">Commands</span>
-              <h2>Apply decisions, then export approved cases</h2>
-              \${commandPanel(followupCommands.apply_review_decisions + '\\n\\n' + followupCommands.export_approved)}
+              <h2>Re-run with repairs, apply decisions, then export</h2>
+              \${commandPanel(followupCommands.rerun_with_repairs + '\\n\\n' + followupCommands.apply_review_decisions + '\\n\\n' + followupCommands.export_approved)}
             </section>
           </div>
         </div>
@@ -4953,16 +5163,19 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (!cases.length) return '<div class="empty-state">No repair cases currently match the repair filters.</div>';
       return \`
         <ul class="action-list">
-          \${cases.map(item => \`
+          \${cases.map(item => {
+            const counts = repairOverlayCounts(item);
+            return \`
             <li>
               <span class="status-dot \${escape(item.recommendation.level === 'red' ? 'blocked' : 'attention')}"></span>
               <div>
                 <strong>\${escape(item.case_id)}</strong>
                 <small class="muted">\${escape(item.recommendation.label)} · \${escape(humanizeList(item.missing_fields.slice(0, 3)))}</small>
+                <small class="muted">\${escape(counts.applied)} saved field repair\${counts.applied === 1 ? '' : 's'} · \${escape(counts.needsMapping)} mapping item\${counts.needsMapping === 1 ? '' : 's'}</small>
               </div>
               <button class="case-link-button" onclick="openCase('\${escape(item.case_id)}')">Open</button>
             </li>
-          \`).join('')}
+          \`;}).join('')}
         </ul>
       \`;
     }
@@ -5344,6 +5557,198 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       };
     }
 
+    function directRepairTargets() {
+      return [
+        'subject.condition',
+        'subject.quality',
+        'subject.gla_sqft',
+        'subject.bedrooms',
+        'subject.bathrooms',
+        'subject.year_built',
+        'subject.site_size',
+        'subject.view',
+        'subject.design_style',
+        'subject.basement',
+        'subject.garage_carport',
+        'comparables.sale_price',
+        'comparables.sales_price_per_gla',
+        'comparables.sale_date',
+        'comparables.contract_date',
+        'comparables.gla_sqft',
+        'comparables.total_rooms',
+        'comparables.bedrooms',
+        'comparables.bathrooms',
+        'comparables.full_bathrooms',
+        'comparables.half_bathrooms',
+        'comparables.site_size',
+        'comparables.view',
+        'comparables.location',
+        'comparables.actual_age',
+        'comparables.year_built',
+        'comparables.condition',
+        'comparables.quality',
+        'comparables.design_style',
+        'comparables.basement_area_sqft',
+        'comparables.basement_finished_sqft',
+        'comparables.basement_description',
+        'comparables.basement_finish',
+        'comparables.garage_carport',
+        'comparables.garage_spaces',
+        'comparables.carport_spaces',
+        'comparables.porch_deck',
+        'comparables.fireplaces',
+        'comparables.sales_concessions',
+        'comparables.financing_concessions',
+        'comparables.net_adjustment',
+        'comparables.gross_adjustment',
+        'comparables.adjusted_sale_price',
+        'reconciliation.final_opinion_of_value',
+        'reconciliation.narrative'
+      ];
+    }
+
+    function isDirectRepairTarget(target) {
+      return String(target || '').startsWith('subject.') ||
+        String(target || '').startsWith('comparables.') ||
+        String(target || '').startsWith('reconciliation.');
+    }
+
+    function caseRepairOverlay(item) {
+      return repairs?.[item.case_id] || {
+        version: 1,
+        case_id: item.case_id,
+        source_file_id: item.source_file_id || null,
+        reviewer: null,
+        updated_at: null,
+        repairs: []
+      };
+    }
+
+    function repairKey(target, compIndex) {
+      return \`\${target}:\${compIndex || ''}\`;
+    }
+
+    function savedRepairFor(item, target, compIndex = '') {
+      const key = repairKey(target, compIndex);
+      return (caseRepairOverlay(item).repairs || []).find(repair => repairKey(repair.target, repair.comp_index || '') === key) || null;
+    }
+
+    function repairOverlayCounts(item) {
+      const entries = caseRepairOverlay(item).repairs || [];
+      return {
+        total: entries.length,
+        applied: entries.filter(entry => (entry.status || 'applied') === 'applied').length,
+        needsMapping: entries.filter(entry => entry.status === 'needs_mapping').length,
+        ignored: entries.filter(entry => entry.status === 'ignored').length
+      };
+    }
+
+    function repairOverlaySummary(item) {
+      const counts = repairOverlayCounts(item);
+      if (counts.total === 0) return '<span class="repair-save-chip empty">No saved repairs yet</span>';
+      return \`
+        <span class="repair-save-chip saved">\${escape(counts.applied)} field fix\${counts.applied === 1 ? '' : 'es'} saved</span>
+        <span class="repair-save-chip mapping">\${escape(counts.needsMapping)} mapping item\${counts.needsMapping === 1 ? '' : 's'}</span>
+      \`;
+    }
+
+    function defaultCompIndex(item, repair) {
+      if (!String(repair.target || '').startsWith('comparables.')) return '';
+      const attention = item.comps.filter(comp => comp.needs_manual_attention);
+      if (attention.length === 1 && repair.target === 'comparables.adjusted_sale_price') return attention[0].comp_index;
+      if (item.comps.length === 1) return item.comps[0].comp_index;
+      return '';
+    }
+
+    function fieldValueForTarget(item, target, compIndex = '') {
+      if (!isDirectRepairTarget(target)) return null;
+      if (target.startsWith('subject.')) return (item.subject || {})[target.slice('subject.'.length)] ?? null;
+      if (target.startsWith('reconciliation.')) return (item.reconciliation || {})[target.slice('reconciliation.'.length)] ?? null;
+      if (target.startsWith('comparables.')) {
+        const indexNumber = Number(compIndex);
+        const comp = item.comps.find(candidate => Number(candidate.comp_index) === indexNumber);
+        return comp ? comp[target.slice('comparables.'.length)] ?? null : null;
+      }
+      return null;
+    }
+
+    function repairTargetOptions(selectedTarget) {
+      const targets = directRepairTargets();
+      const selected = String(selectedTarget || '');
+      const withSelected = targets.includes(selected) || !selected ? targets : [selected, ...targets];
+      return withSelected.map(target => \`
+        <option value="\${escape(target)}" \${target === selected ? 'selected' : ''}>\${escape(target)}</option>
+      \`).join('');
+    }
+
+    function repairValueControl(target, value) {
+      if (String(target || '').endsWith('.narrative')) {
+        return \`<textarea data-repair-value placeholder="Paste or type the corrected narrative.">\${escape(value || '')}</textarea>\`;
+      }
+      const type = String(target || '').includes('date') ? 'date' : 'text';
+      return \`<input data-repair-value type="\${type}" value="\${escape(value || '')}" placeholder="Correct value">\`;
+    }
+
+    function savedRepairMarkup(saved) {
+      if (!saved) return '<div class="repair-saved-state empty">No saved repair for this exact field yet.</div>';
+      const status = saved.status || 'applied';
+      const valueText = saved.value == null || saved.value === '' ? 'No value saved' : String(saved.value);
+      return \`
+        <div class="repair-saved-state \${escape(status)}">
+          <strong>\${escape(status === 'needs_mapping' ? 'Saved as mapping/parser work' : 'Saved repair')}</strong>
+          <span>\${escape(valueText)}</span>
+          \${saved.note ? \`<small>\${escape(saved.note)}</small>\` : ''}
+        </div>
+      \`;
+    }
+
+    function repairEditor(item, repair, repairIndex) {
+      const compIndex = defaultCompIndex(item, repair);
+      const saved = savedRepairFor(item, repair.target, compIndex);
+      const currentValue = fieldValueForTarget(item, repair.target, saved?.comp_index || compIndex);
+      const savedValue = saved?.value ?? '';
+      const direct = isDirectRepairTarget(repair.target);
+      return \`
+        <div class="repair-editor" data-repair-index="\${escape(repairIndex)}" data-case-id="\${escape(item.case_id)}">
+          <div class="repair-editor-heading">
+            <strong>Fix this item</strong>
+            <span>\${direct ? 'Save a corrected extracted value, or mark it as parser/mapping work.' : 'This needs parser/mapping work before it can be a field value.'}</span>
+          </div>
+          <div class="repair-editor-grid">
+            <label>
+              <span>Field</span>
+              <select data-repair-target>
+                \${repairTargetOptions(repair.target)}
+              </select>
+            </label>
+            <label>
+              <span>Comp #</span>
+              <input data-repair-comp-index value="\${escape(saved?.comp_index || compIndex || '')}" placeholder="Only for comparable fields">
+            </label>
+            <label>
+              <span>Current extracted value</span>
+              <input value="\${escape(fmt(currentValue))}" readonly>
+            </label>
+            <label class="repair-value-cell">
+              <span>Correct value</span>
+              \${repairValueControl(repair.target, savedValue)}
+            </label>
+          </div>
+          <label class="repair-note-line">
+            <span>Repair note</span>
+            <input data-repair-note value="\${escape(saved?.note || repair.next || '')}" placeholder="Why this is the right fix, or what mapping is needed">
+          </label>
+          \${savedRepairMarkup(saved)}
+          <div class="repair-editor-actions">
+            <button type="button" class="primary" onclick="saveRepair(this, 'applied')">Save field repair</button>
+            <button type="button" onclick="saveRepair(this, 'needs_mapping')">Needs parser or mapping</button>
+            <button type="button" data-note-template="\${escape('Needs Fix: ' + repair.title + ' - ' + repair.next)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add to decision note</button>
+          </div>
+          <p class="repair-editor-message" aria-live="polite"></p>
+        </div>
+      \`;
+    }
+
     function repairPlanPanel(item, issues) {
       const repairs = repairPlanItems(item);
       if (!repairs.length) {
@@ -5363,9 +5768,10 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
             <span>What needs fixing</span>
             <h2>\${escape(repairs.length)} issue\${repairs.length === 1 ? '' : 's'} to resolve before approval</h2>
             <p>Each row is a separate repair question. Needs Fix sends this case to the repair queue; it is not approval.</p>
+            <div class="repair-save-summary">\${repairOverlaySummary(item)}</div>
           </div>
           <div class="repair-issue-list">
-            \${repairs.map((repair, repairIndex) => repairIssueRow(repair, repairIndex)).join('')}
+            \${repairs.map((repair, repairIndex) => repairIssueRow(item, repair, repairIndex)).join('')}
           </div>
           <details class="raw-problems">
             <summary>Show raw parser warnings</summary>
@@ -5379,9 +5785,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       \`;
     }
 
-    function repairIssueRow(repair, repairIndex) {
+    function repairIssueRow(item, repair, repairIndex) {
       const signal = mappingSignal(repair.target || '');
-      const note = \`Needs Fix: \${repair.title} - \${repair.next}\`;
       return \`
         <article class="repair-issue-row \${escape(signal.tone)}">
           <div class="repair-issue-number">\${escape(repairIndex + 1)}</div>
@@ -5400,12 +5805,12 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
               <span>\${escape(signal.label)}</span>
               <code>\${escape(signal.path || signal.detail)}</code>
             </div>
+            \${repairEditor(item, repair, repairIndex)}
           </div>
           <div class="repair-actions">
             <button type="button" onclick="openEvidenceDrawer()">Evidence</button>
             <button type="button" onclick="setView('mapping')">Mapping</button>
             <button type="button" onclick="setView('repairs')">Repairs</button>
-            <button type="button" data-note-template="\${escape(note)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add note</button>
           </div>
         </article>
       \`;
@@ -5736,7 +6141,9 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
 
               <details class="rail-details">
                 <summary>Apply and export commands</summary>
-                <h3>Apply decisions</h3>
+                <h3>Re-run training data with saved repairs</h3>
+                \${commandPanel(followupCommands.rerun_with_repairs)}
+                <h3>Apply review gate</h3>
                 \${commandPanel(followupCommands.apply_review_decisions)}
                 <h3>Export approved JSONL</h3>
                 \${commandPanel(followupCommands.export_approved)}
@@ -6020,6 +6427,115 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       render();
     }
 
+    function setRepairMessage(editor, text, tone = '') {
+      const message = editor.querySelector('.repair-editor-message');
+      if (!message) return;
+      message.textContent = text;
+      message.dataset.tone = tone;
+    }
+
+    function upsertStaticRepair(body) {
+      const now = new Date().toISOString();
+      const overlay = repairs[body.case_id] || {
+        version: 1,
+        case_id: body.case_id,
+        source_file_id: body.source_file_id || null,
+        reviewer: body.reviewer || null,
+        updated_at: now,
+        repairs: []
+      };
+      const key = repairKey(body.target, body.comp_index || '');
+      const nextEntry = {
+        target: body.target,
+        comp_index: body.comp_index || null,
+        value: body.value ?? null,
+        status: body.status || 'applied',
+        reviewer: body.reviewer || null,
+        note: body.note || null,
+        source: body.source || 'static_demo',
+        created_at: now,
+        updated_at: now
+      };
+      overlay.repairs = [...(overlay.repairs || []).filter(entry => repairKey(entry.target, entry.comp_index || '') !== key), nextEntry]
+        .sort((a, b) => repairKey(a.target, a.comp_index || '').localeCompare(repairKey(b.target, b.comp_index || '')));
+      overlay.updated_at = now;
+      overlay.reviewer = body.reviewer || overlay.reviewer || null;
+      repairs = { ...repairs, [body.case_id]: overlay };
+      writeStaticRepairs(repairs);
+    }
+
+    async function saveRepair(button, status) {
+      const editor = button.closest('.repair-editor');
+      const item = currentCase();
+      if (!editor || !item) return;
+      const target = editor.querySelector('[data-repair-target]')?.value?.trim() || '';
+      const compRaw = editor.querySelector('[data-repair-comp-index]')?.value?.trim() || '';
+      const valueRaw = editor.querySelector('[data-repair-value]')?.value?.trim() || '';
+      const note = editor.querySelector('[data-repair-note]')?.value?.trim() || '';
+      const reviewer = document.getElementById('reviewer').value.trim() || defaultReviewer;
+      const direct = isDirectRepairTarget(target);
+      if (!target) {
+        setRepairMessage(editor, 'Choose the field this repair is about.', 'bad');
+        return;
+      }
+      if (status === 'applied' && !direct) {
+        setRepairMessage(editor, 'Choose a subject, comparable, or reconciliation field before saving a field repair.', 'bad');
+        return;
+      }
+      if (target.startsWith('comparables.') && !compRaw) {
+        setRepairMessage(editor, 'Enter the comp number for comparable repairs.', 'bad');
+        return;
+      }
+      if (status === 'applied' && !valueRaw) {
+        setRepairMessage(editor, 'Enter the corrected value before saving a field repair.', 'bad');
+        return;
+      }
+      const body = {
+        case_id: item.case_id,
+        source_file_id: item.source_file_id || null,
+        target,
+        comp_index: compRaw ? Number(compRaw) : null,
+        value: status === 'applied' ? valueRaw : null,
+        status,
+        reviewer,
+        note: note || (status === 'needs_mapping' ? \`Needs parser or mapping work for \${target}.\` : null),
+        source: 'review_ui'
+      };
+      if (body.comp_index != null && (!Number.isFinite(body.comp_index) || body.comp_index < 1)) {
+        setRepairMessage(editor, 'Comp number must be 1 or higher.', 'bad');
+        return;
+      }
+      button.disabled = true;
+      setRepairMessage(editor, 'Saving...', '');
+      try {
+        if (isStaticDemo) {
+          upsertStaticRepair(body);
+          setRepairMessage(editor, 'Saved in this browser demo.', 'good');
+          renderCase();
+          return;
+        }
+        const res = await fetch('/api/repair', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(body)
+        });
+        const payload = await res.json();
+        if (!res.ok) {
+          setRepairMessage(editor, payload.error || 'Repair save failed.', 'bad');
+          return;
+        }
+        repairs = payload.repairs || repairs;
+        state = payload.state || state;
+        await refreshWorkbench();
+        setRepairMessage(editor, 'Saved repair overlay.', 'good');
+        renderCase();
+      } catch (error) {
+        setRepairMessage(editor, error instanceof Error ? error.message : String(error), 'bad');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     async function saveDecision(status) {
       const item = currentCase();
       const notes = document.getElementById('notes').value.trim();
@@ -6146,10 +6662,22 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
 }
 
 function buildFollowupCommands(options: ReviewUiOptions): {
+  rerun_with_repairs: string;
   apply_review_decisions: string;
   export_approved: string;
 } {
+  const input = "./private/appraisal-xmls-sample";
+  const output = "./private/appraisal-training-with-repairs";
   return {
+    rerun_with_repairs: `npm run appraisal:training-data -- \\
+  --input ${formatCliPath(input)} \\
+  --output ${formatCliPath(output)} \\
+  --eval-ratio 0.2 \\
+  --seed 42 \\
+  --redact true \\
+  --include-needs-review true \\
+  --emit-review-packets true \\
+  --repairs ${formatCliPath(options.repairs)}`,
     apply_review_decisions: `npm run appraisal:apply-review-decisions -- \\
   --review-packets ${formatCliPath(options.reviewPackets)} \\
   --decisions ${formatCliPath(path.join(options.output, "review_decisions.csv"))} \\
@@ -6189,6 +6717,7 @@ function parseArgs(args: string[]): ReviewUiOptions {
   const reviewPackets = stringArg(values, "review-packets");
   const conflictAudit = stringArg(values, "conflict-audit");
   const output = stringArg(values, "output");
+  const repairs = stringArg(values, "repairs");
   if (!reviewBatch) throw new Error("Missing required --review-batch folder");
   if (!reviewPackets) throw new Error("Missing required --review-packets folder");
   if (!conflictAudit) throw new Error("Missing required --conflict-audit folder");
@@ -6198,6 +6727,7 @@ function parseArgs(args: string[]): ReviewUiOptions {
     reviewPackets,
     conflictAudit,
     output,
+    repairs: repairs ?? path.join(output, "case_repairs"),
     port: numberArg(values, "port", 4317)
   };
 }
