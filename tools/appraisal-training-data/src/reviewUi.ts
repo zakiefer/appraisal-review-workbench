@@ -3231,7 +3231,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     .focused-review-layout .record-header {
       margin-bottom: 0;
     }
-    .review-action-summary {
+    .review-action-summary,
+    .plain-review-card {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 290px;
       gap: 16px;
@@ -3253,6 +3254,95 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     .review-action-summary.green {
       border-left-color: var(--green);
       background: #f7fbf9;
+    }
+    .plain-review-card {
+      grid-template-columns: minmax(0, 1fr) 360px;
+      align-items: stretch;
+      padding: 18px;
+      border-left-width: 6px;
+    }
+    .plain-review-card.red {
+      border-left-color: var(--red);
+      background: #fff8f8;
+    }
+    .plain-review-card.yellow {
+      border-left-color: #c78105;
+      background: #fffdf7;
+    }
+    .plain-review-card.green {
+      border-left-color: var(--green);
+      background: #f7fbf9;
+    }
+    .plain-review-card span,
+    .plain-steps span,
+    .button-meaning-grid span,
+    .decision-helper span {
+      display: block;
+      margin-bottom: 5px;
+      color: #7b8796;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .plain-review-card h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.12;
+    }
+    .plain-review-card p {
+      max-width: 760px;
+      margin: 8px 0 0;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.4;
+    }
+    .plain-steps {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .plain-steps ol {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding-left: 22px;
+      color: #263445;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .button-meaning-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .button-meaning-grid.red {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .button-meaning {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+    }
+    .button-meaning strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1f2937;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .button-meaning small {
+      display: block;
+      color: #536173;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.3;
     }
     .review-action-summary span,
     .decision-box-heading span {
@@ -3382,6 +3472,19 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     .focused-decision-box textarea {
       min-height: 76px;
     }
+    .decision-helper {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      background: #f7fbff;
+      color: #334155;
+      font-weight: 850;
+    }
+    .decision-helper p {
+      margin: 0;
+    }
     .focused-decision-box .decision-actions {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
@@ -3449,7 +3552,10 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       .topline { grid-template-columns: 1fr; }
       .sort-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .review-action-summary,
+      .plain-review-card,
       .decision-box-heading,
+      .button-meaning-grid,
+      .button-meaning-grid.red,
       .case-utility-details {
         grid-template-columns: 1fr;
       }
@@ -3482,7 +3588,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     <div class="topline">
       <div>
         <h1>Tier 1 Appraisal Review</h1>
-        <p class="subtitle">Review candidate training cases, resolve manual attention items, and write local approval decisions.</p>
+        <p class="subtitle">Open a case, check what is missing or wrong, then choose Approve, Needs Fix, Reject, or Skip.</p>
         <div class="progress-row">
           <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
           <div id="progressLabel" class="progress-label">Reviewed 0 / 0</div>
@@ -3981,7 +4087,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       const remaining = items.length - visibleItems.length;
       return \`
         <span class="case-approval">
-          <strong>\${escape(items.length)} review item\${items.length === 1 ? '' : 's'}</strong>
+          <strong>\${escape(items.length)} thing\${items.length === 1 ? '' : 's'} to check</strong>
           <span class="case-approval-list">
             \${visibleItems.map(approvalItem => \`
               <span class="case-approval-point \${escape(approvalItem.level)}">
@@ -4004,7 +4110,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (item.recommendation.level === 'red') {
         return 'This case is not training-ready. Use Needs Fix if a parser or mapping repair could recover it. Use Reject if this source should stay out of training data.';
       }
-      return \`Approve is locked until all \${items.length} review items are checked. If any item is not acceptable, write a note and use Needs Fix or Reject.\`;
+      return \`Approve is locked until all \${items.length} things are checked. If anything is not acceptable, write a note and use Needs Fix or Reject.\`;
     }
 
     function approvalTitleKey(item) {
@@ -4040,9 +4146,9 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       return \`
         <section class="approval-summary-panel">
           <div class="approval-summary-header">
-            <span>Review items</span>
-            <h2>Check these \${escape(items.length)} item\${items.length === 1 ? '' : 's'} before approving</h2>
-            <p>Mark Yes only for items you personally accept. If any item is not acceptable, use Needs Fix or Reject.</p>
+            <span>Things to check</span>
+            <h2>Check these \${escape(items.length)} thing\${items.length === 1 ? '' : 's'} before you approve</h2>
+            <p>Mark Yes only when you looked at it and it seems OK. If one is wrong or missing, choose Needs Fix or Reject.</p>
             <div class="approval-progress" data-approval-progress></div>
           </div>
           <ol class="approval-statements">
@@ -4590,11 +4696,11 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
         <section class="review-guide \${escape(item.recommendation.level)}">
           <span>What to do</span>
           <h2>\${escape(outcome.label)}</h2>
-          <p>\${escape(mainIssue)} The next section lists the exact review items for this case.</p>
+          <p>\${escape(mainIssue)} The next section lists the exact things to check for this case.</p>
           <div class="guide-steps">
             <div class="guide-step">
-              <strong>1. Read a review item</strong>
-              <small>Each item names one thing you are accepting before approval.</small>
+              <strong>1. Read a thing to check</strong>
+              <small>Each row names one thing you are accepting before approval.</small>
             </div>
             <div class="guide-step">
               <strong>2. Check the evidence</strong>
@@ -4613,7 +4719,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       const primaryIssue = issues[0] || 'Automatic checks did not find a blocker.';
       const sideLabel = item.recommendation.level === 'red'
         ? 'Needs Fix or Reject'
-        : \`\${approvals.length} review item\${approvals.length === 1 ? '' : 's'}\`;
+        : \`\${approvals.length} thing\${approvals.length === 1 ? '' : 's'} to check\`;
       return \`
         <section class="review-action-summary \${escape(item.recommendation.level)}">
           <div>
@@ -4634,6 +4740,63 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       \`;
     }
 
+    function plainReviewMessage(item, approvals) {
+      if (item.recommendation.level === 'red') {
+        return {
+          title: 'This one is not ready.',
+          body: 'It is missing important data. Do not approve it. Choose Needs Fix if it can be repaired. Choose Reject if it should not be used.',
+          steps: [
+            'Look at the problems listed below.',
+            'Choose Needs Fix or Reject.',
+            'Write one short note saying why.'
+          ]
+        };
+      }
+      if (item.recommendation.level === 'yellow') {
+        return {
+          title: 'This one might be usable.',
+          body: \`Check the \${approvals.length} thing\${approvals.length === 1 ? '' : 's'} listed below. If every one is OK, approve it. If anything is wrong or missing, choose Needs Fix or Reject.\`,
+          steps: [
+            'Read each thing to check.',
+            'Mark Yes only if it looks OK.',
+            'Approve only when every thing is checked.'
+          ]
+        };
+      }
+      return {
+        title: 'This one looks usable.',
+        body: 'Do a quick spot-check. If it looks right, approve it. If something is wrong, choose Needs Fix or Reject.',
+        steps: [
+          'Spot-check the case.',
+          'Approve if it looks right.',
+          'Use Needs Fix or Reject if it does not.'
+        ]
+      };
+    }
+
+    function plainEnglishSummary(item, approvals, issues, visibleCount) {
+      const message = plainReviewMessage(item, approvals);
+      return \`
+        <section class="plain-review-card \${escape(item.recommendation.level)}">
+          <div>
+            <span>Your job on this case</span>
+            <h2>\${escape(message.title)}</h2>
+            <p>\${escape(message.body)}</p>
+          </div>
+          <div class="plain-steps">
+            <span>Do this</span>
+            <ol>\${message.steps.map(step => \`<li>\${escape(step)}</li>\`).join('')}</ol>
+            <div class="review-nav-buttons">
+              <button onclick="move(-1)">Previous</button>
+              <button onclick="move(1)">Next</button>
+              <button onclick="jumpFlagged()">Jump flagged</button>
+            </div>
+            <small class="muted">Case \${escape(index + 1)} of \${escape(visibleCount)}</small>
+          </div>
+        </section>
+      \`;
+    }
+
     function decisionProblems(issues) {
       const visible = issues.slice(0, 6);
       if (!visible.length) return '';
@@ -4641,6 +4804,40 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
         <div class="decision-problems">
           <span>Problems found</span>
           <ul>\${visible.map(issue => \`<li>\${escape(issue)}</li>\`).join('')}</ul>
+        </div>
+      \`;
+    }
+
+    function buttonMeaningGrid(isRed) {
+      const meanings = isRed
+        ? [
+          ['Needs Fix', 'Repair it later. Use this when missing or wrong data might be fixed.'],
+          ['Reject', 'Do not use this case for training.'],
+          ['Skip', 'Leave it undecided for now.']
+        ]
+        : [
+          ['Approve', 'Use this case for training.'],
+          ['Needs Fix', 'Repair it later. Use this when something is wrong or missing.'],
+          ['Reject', 'Do not use this case for training.'],
+          ['Skip', 'Leave it undecided for now.']
+        ];
+      return \`
+        <div class="button-meaning-grid \${isRed ? 'red' : ''}">
+          \${meanings.map(([label, meaning]) => \`
+            <div class="button-meaning">
+              <strong>\${escape(label)}</strong>
+              <small>\${escape(meaning)}</small>
+            </div>
+          \`).join('')}
+        </div>
+      \`;
+    }
+
+    function decisionHelper(isRed) {
+      return \`
+        <div class="decision-helper">
+          <span>Note rule</span>
+          <p>\${isRed ? 'For Needs Fix or Reject, write one plain sentence. Example: Missing comps and final value, needs parser repair.' : 'If you approve, check every thing first. If you choose Needs Fix or Reject, write one plain sentence why.'}</p>
         </div>
       \`;
     }
@@ -4672,7 +4869,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           <div class="approval-override-body">
             <p>Only use this if you reviewed every problem and still want this case included as training data.</p>
             \${approvalStatementSummary(caseId, approvals)}
-            <button id="approveBtn" class="green override-approve" onclick="saveDecision('approved')">Approve override & Next (A)</button>
+            <button id="approveBtn" class="green override-approve" onclick="saveDecision('approved')">Approve override - use anyway (A)</button>
           </div>
         </details>
       \`;
@@ -4691,13 +4888,15 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           </div>
           \${decisionProblems(issues)}
           \${isRed ? '' : approvalStatementSummary(item.case_id, approvals)}
+          \${buttonMeaningGrid(isRed)}
+          \${decisionHelper(isRed)}
           <textarea id="notes" placeholder="\${isRed ? 'Notes required. Say whether this needs parser/mapping repair or should be rejected.' : 'Notes required for Needs Fix or Reject. Notes are also required to approve yellow cases.'}">\${escape(item.decision.notes || '')}</textarea>
           \${noteTemplateButtons(isRed)}
           <div class="decision-actions primary-actions \${isRed ? 'red-case-actions' : ''}">
-            \${isRed ? '' : '<button id="approveBtn" class="green" onclick="saveDecision(\\'approved\\')">Approve & Next (A)</button>'}
-            <button class="yellow" onclick="saveDecision('needs_revision')">Needs Fix & Next (F)</button>
-            <button class="red" onclick="saveDecision('rejected')">Reject & Next (R)</button>
-            <button onclick="saveDecision('skipped')">Skip & Next (S)</button>
+            \${isRed ? '' : '<button id="approveBtn" class="green" onclick="saveDecision(\\'approved\\')">Approve - use this (A)</button>'}
+            <button class="yellow" onclick="saveDecision('needs_revision')">Needs Fix - repair later (F)</button>
+            <button class="red" onclick="saveDecision('rejected')">Reject - do not use (R)</button>
+            <button onclick="saveDecision('skipped')">Skip - decide later (S)</button>
           </div>
           \${isRed ? approvalOverridePanel(item.case_id, approvals) : ''}
           <p id="saveMsg" class="save-msg"></p>
@@ -4827,7 +5026,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
                 <div class="record-stats">
                   <span><strong>\${escape(item.comps.length)}</strong> comps</span>
                   <span><strong>\${escape(item.comps.filter(comp => comp.needs_manual_attention).length)}</strong> attention rows</span>
-                  <span><strong>\${escape(approvals.length)}</strong> review items</span>
+                  <span><strong>\${escape(approvals.length)}</strong> things to check</span>
                   <span><strong>\${escape(fmtMoney(item.reconciliation.final_opinion_of_value))}</strong> final value</span>
                 </div>
               </div>
@@ -4837,7 +5036,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
                 <span class="level-chip neutral-chip">Tier 1 \${escape(humanize(item.tier.tier1_status))}</span>
               </div>
             </div>
-            \${reviewActionSummary(item, approvals, outcome, issues, visibleCount)}
+            \${plainEnglishSummary(item, approvals, issues, visibleCount)}
             \${decisionBox(item, approvals, issues)}
             <details class="evidence-drawer">
               <summary>Open evidence and extracted details</summary>
@@ -5054,7 +5253,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (!item) return;
       const status = approvalConfirmationStatus(item);
       document.querySelectorAll('[data-approval-progress]').forEach(node => {
-        const answerText = \`\${status.confirmed} of \${status.total} review items checked\`;
+        const answerText = \`\${status.confirmed} of \${status.total} things checked\`;
         node.textContent = status.missing.length ? answerText : \`\${answerText}. Ready to approve if notes are complete.\`;
         node.classList.toggle('ready', !status.missing.length);
       });
@@ -5071,13 +5270,13 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
         approveBtn.disabled = status.missing.length > 0;
         approveBtn.textContent = status.missing.length
           ? (isOverride ? 'Approve override locked' : 'Approve locked')
-          : (isOverride ? 'Approve override & Next (A)' : 'Approve & Next (A)');
+          : (isOverride ? 'Approve override - use anyway (A)' : 'Approve - use this (A)');
         approveBtn.title = status.missing.length
-          ? \`Check every review item before approving: \${status.missing.join(', ')}\`
-          : 'Every review item is checked.';
+          ? \`Check every thing before approving: \${status.missing.join(', ')}\`
+          : 'Every thing is checked.';
       }
       const saveMsg = document.getElementById('saveMsg');
-      if (saveMsg && !status.missing.length && saveMsg.textContent.startsWith('Check every review item')) {
+      if (saveMsg && !status.missing.length && saveMsg.textContent.startsWith('Check every thing')) {
         saveMsg.textContent = '';
       }
     }
@@ -5122,7 +5321,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (status === 'approved') {
         const approvalStatus = approvalConfirmationStatus(item);
         if (approvalStatus.missing.length) {
-          document.getElementById('saveMsg').textContent = \`Check every review item before approving. Missing: \${approvalStatus.missing.join(', ')}.\`;
+          document.getElementById('saveMsg').textContent = \`Check every thing before approving. Missing: \${approvalStatus.missing.join(', ')}.\`;
           return;
         }
       }
