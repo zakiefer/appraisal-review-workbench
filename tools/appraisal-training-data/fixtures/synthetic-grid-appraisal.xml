@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GridAppraisalExport>
+  <ReportType>Grid Residential Appraisal</ReportType>
+  <FormType>Grid 1004</FormType>
+  <EffectiveDate>2026-04-10</EffectiveDate>
+  <SubjectProperty>
+    <PropertyType>Single Family Residence</PropertyType>
+    <StreetAddress>707 Training Grid Rd, Exampleville, IN 46220</StreetAddress>
+    <City>Exampleville</City>
+    <State>IN</State>
+    <PostalCode>46220</PostalCode>
+    <County>Sample County</County>
+    <GrossLivingArea>1900</GrossLivingArea>
+    <Bedrooms>3</Bedrooms>
+    <Bathrooms>2</Bathrooms>
+    <YearBuilt>2002</YearBuilt>
+  </SubjectProperty>
+  <SalesComparisonGrid>
+    <Row>
+      <Label>Condition</Label>
+      <Subject>C3</Subject>
+      <Comp1>C3</Comp1>
+      <Comp2>C4</Comp2>
+    </Row>
+    <Row>
+      <Label>Quality Rating</Label>
+      <Subject>Q4</Subject>
+      <Comp1>Q4</Comp1>
+      <Comp2>Q4</Comp2>
+    </Row>
+    <Row>
+      <Label>Gross Living Area</Label>
+      <Comp1>1840</Comp1>
+      <Comp2>2010</Comp2>
+    </Row>
+    <Row>
+      <Label>Sale Date</Label>
+      <Comp1>2026-03-01</Comp1>
+      <Comp2>03/15/2026</Comp2>
+    </Row>
+    <Row>
+      <Label>Sale Price</Label>
+      <Comp1>$300,000</Comp1>
+      <Comp2>$318,000</Comp2>
+    </Row>
+    <Row>
+      <Label>Adjusted Sale Price</Label>
+      <Comp1>$305,000</Comp1>
+      <Comp2>$310,000</Comp2>
+    </Row>
+  </SalesComparisonGrid>
+  <Reconciliation>
+    <FinalOpinionOfValue>$307,000</FinalOpinionOfValue>
+    <Narrative>Grid fixture reconciles selected fake comparable indicators.</Narrative>
+  </Reconciliation>
+</GridAppraisalExport>

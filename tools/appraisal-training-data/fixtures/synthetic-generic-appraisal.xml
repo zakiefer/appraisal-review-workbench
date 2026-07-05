@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppraisalExport>
+  <ReportType>Residential Appraisal Export</ReportType>
+  <Form>Generic Short Form</Form>
+  <Purpose>Refinance support</Purpose>
+  <ValuationDate>2026-03-05</ValuationDate>
+  <PropertySubject>
+    <PropertySubType>Detached residential</PropertySubType>
+    <Address>88 Fictional Road</Address>
+    <City>Demo City</City>
+    <StateCode>OH</StateCode>
+    <Zip>44101</Zip>
+    <CountyName>Demo County</CountyName>
+    <MarketArea>Sample Heights</MarketArea>
+    <LotSize>7,500 sq ft</LotSize>
+    <LivingArea>1,420</LivingArea>
+    <BedroomCount>3</BedroomCount>
+    <BathroomCount>2</BathroomCount>
+    <BuiltYear>1985</BuiltYear>
+    <QualityRating>Average</QualityRating>
+    <Style>Ranch</Style>
+  </PropertySubject>
+  <NeighborhoodMarket>
+    <MarketCondition>Increasing</MarketCondition>
+    <ExposureTime>Less than 90 days</ExposureTime>
+    <PriceTrend>Increasing</PriceTrend>
+    <DemandSupply>Shortage</DemandSupply>
+    <NeighborhoodDescription>Established residential neighborhood.</NeighborhoodDescription>
+  </NeighborhoodMarket>
+  <Sales>
+    <Comp>
+      <Number>A</Number>
+      <AddressLine1>101 Placeholder Street</AddressLine1>
+      <City>Demo City</City>
+      <StateCode>OH</StateCode>
+      <ZipCode>44102</ZipCode>
+      <Distance>0.6 miles</Distance>
+      <Price>225000</Price>
+      <ClosedDate>20260301</ClosedDate>
+      <ListingSource>Synthetic local data</ListingSource>
+      <LivingArea>1,380 sq ft</LivingArea>
+      <BedroomCount>3</BedroomCount>
+      <BathroomCount>2</BathroomCount>
+      <BuiltYear>1983</BuiltYear>
+      <QualityRating>Average</QualityRating>
+      <LotSize>7,200 sq ft</LotSize>
+      <AdjustedPrice>228500</AdjustedPrice>
+      <Comment>Close substitute with minor size adjustment.</Comment>
+    </Comp>
+    <Comp>
+      <Number>B</Number>
+      <AddressLine1>202 Example Court</AddressLine1>
+      <City>Demo City</City>
+      <StateCode>OH</StateCode>
+      <ZipCode>44103</ZipCode>
+      <Distance>1.4 miles</Distance>
+      <ClosedDate>03/02/2026</ClosedDate>
+      <ListingSource>Synthetic local data</ListingSource>
+      <LivingArea>1,500 sq ft</LivingArea>
+      <BedroomCount>3</BedroomCount>
+      <BathroomCount>2</BathroomCount>
+      <BuiltYear>1988</BuiltYear>
+      <QualityRating>Average</QualityRating>
+      <LotSize>8,100 sq ft</LotSize>
+      <Comment>Missing sale price to exercise warning behavior.</Comment>
+    </Comp>
+  </Sales>
+  <ValueConclusion>
+    <ValueRangeLow>220000</ValueRangeLow>
+    <ValueRangeHigh>232000</ValueRangeHigh>
+    <AppraisedValue>229000</AppraisedValue>
+    <ValueConclusionComment>Reconciliation emphasizes the closest synthetic comparable.</ValueConclusionComment>
+    <Reliability>Needs review</Reliability>
+  </ValueConclusion>
+  <Comments>
+    <GeneralComments>Borrower: Test Person. License #ABC12345. This is a synthetic fixture.</GeneralComments>
+  </Comments>
+</AppraisalExport>

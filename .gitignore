@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+.playwright-cli/
+
+# Private appraisal inputs and generated local outputs.
+private/
+private/appraisal-xmls/
+private/appraisal-training-output/
+appraisal-training-output/
+*.local.xml

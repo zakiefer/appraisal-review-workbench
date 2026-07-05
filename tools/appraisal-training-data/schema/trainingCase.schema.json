@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/schemas/trainingCase.schema.json",
+  "title": "TrainingCase",
+  "type": "object",
+  "required": ["case_id", "task", "input_case", "expert_answer", "quality"],
+  "additionalProperties": false,
+  "properties": {
+    "case_id": { "type": "string" },
+    "task": { "const": "explain_selected_comps_adjustments_and_reconciliation" },
+    "input_case": {
+      "type": "object",
+      "required": ["metadata", "subject", "market", "selected_comparables", "available_context"],
+      "not": {
+        "required": ["final_opinion_of_value"]
+      }
+    },
+    "expert_answer": {
+      "type": "object",
+      "required": ["selected_comp_summary", "adjustment_summary", "reconciliation", "caveats"],
+      "properties": {
+        "selected_comp_summary": { "type": "array" },
+        "adjustment_summary": { "type": "array" },
+        "reconciliation": {
+          "type": "object",
+          "properties": {
+            "final_opinion_of_value": { "type": ["number", "null"] },
+            "indicated_value_low": { "type": ["number", "null"] },
+            "indicated_value_high": { "type": ["number", "null"] },
+            "narrative": { "type": ["string", "null"] }
+          }
+        },
+        "caveats": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["status", "warnings"],
+      "properties": {
+        "status": { "enum": ["candidate", "needs_review", "rejected"] },
+        "warnings": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

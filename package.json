@@ -1,0 +1,30 @@
+{
+  "name": "appraisal-engine-local-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "appraisal:training-data": "tsx tools/appraisal-training-data/src/cli.ts",
+    "appraisal:inspect-xml": "tsx tools/appraisal-training-data/src/inspectXml.ts",
+    "appraisal:discover-fields": "tsx tools/appraisal-training-data/src/discoverFields.ts",
+    "appraisal:review-mappings": "tsx tools/appraisal-training-data/src/reviewMappings.ts",
+    "appraisal:validate-mapping": "tsx tools/appraisal-training-data/src/validateMapping.ts",
+    "appraisal:audit-conflicts": "tsx tools/appraisal-training-data/src/auditConflicts.ts",
+    "appraisal:audit-adjusted-price-resolution": "tsx tools/appraisal-training-data/src/auditAdjustedPriceResolution.ts",
+    "appraisal:prepare-review-batch": "tsx tools/appraisal-training-data/src/prepareReviewBatch.ts",
+    "appraisal:apply-review-decisions": "tsx tools/appraisal-training-data/src/applyReviewDecisions.ts",
+    "appraisal:review-ui": "tsx tools/appraisal-training-data/src/reviewUi.ts",
+    "appraisal:review-ui:static": "tsx tools/appraisal-training-data/src/buildReviewUiStatic.ts",
+    "appraisal:export-approved": "tsx tools/appraisal-training-data/src/exportApproved.ts",
+    "test:appraisal-training-data": "vitest run tools/appraisal-training-data/tests"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

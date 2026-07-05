@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/schemas/normalizedAppraisalCase.schema.json",
+  "title": "NormalizedAppraisalCase",
+  "type": "object",
+  "required": [
+    "case_id",
+    "source",
+    "metadata",
+    "subject",
+    "market",
+    "comparables",
+    "reconciliation",
+    "appraiser_comments",
+    "quality_flags"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "case_id": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["filename", "source_path_hash", "source_format", "parsed_at", "parser_version"],
+      "properties": {
+        "filename": { "type": "string" },
+        "source_path_hash": { "type": "string" },
+        "source_format": { "const": "xml" },
+        "detected_xml_type": {
+          "type": ["string", "null"],
+          "enum": ["uad_like", "mismo_like", "generic_appraisal_xml", "unknown_xml", null]
+        },
+        "parsed_at": { "type": "string" },
+        "parser_version": { "type": "string" }
+      }
+    },
+    "metadata": { "$ref": "#/$defs/metadata" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "market": { "$ref": "#/$defs/market" },
+    "comparables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/comparable" }
+    },
+    "reconciliation": { "$ref": "#/$defs/reconciliation" },
+    "appraiser_comments": { "$ref": "#/$defs/comments" },
+    "quality_flags": { "$ref": "#/$defs/quality" }
+  },
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "nullableNumber": { "type": ["number", "null"] },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "report_type": { "$ref": "#/$defs/nullableString" },
+        "form_type": { "$ref": "#/$defs/nullableString" },
+        "loan_purpose": { "$ref": "#/$defs/nullableString" },
+        "appraisal_purpose": { "$ref": "#/$defs/nullableString" },
+        "effective_date": { "$ref": "#/$defs/nullableString" },
+        "inspection_date": { "$ref": "#/$defs/nullableString" },
+        "report_date": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "property_type": { "$ref": "#/$defs/nullableString" },
+        "address_redacted": { "$ref": "#/$defs/nullableString" },
+        "city": { "$ref": "#/$defs/nullableString" },
+        "state": { "$ref": "#/$defs/nullableString" },
+        "postal_code_redacted": { "$ref": "#/$defs/nullableString" },
+        "county": { "$ref": "#/$defs/nullableString" },
+        "neighborhood": { "$ref": "#/$defs/nullableString" },
+        "site_size": { "$ref": "#/$defs/nullableString" },
+        "gla_sqft": { "$ref": "#/$defs/nullableNumber" },
+        "bedrooms": { "$ref": "#/$defs/nullableNumber" },
+        "bathrooms": { "$ref": "#/$defs/nullableNumber" },
+        "year_built": { "$ref": "#/$defs/nullableNumber" },
+        "condition": { "$ref": "#/$defs/nullableString" },
+        "quality": { "$ref": "#/$defs/nullableString" },
+        "view": { "$ref": "#/$defs/nullableString" },
+        "design_style": { "$ref": "#/$defs/nullableString" },
+        "basement": { "$ref": "#/$defs/nullableString" },
+        "garage_carport": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "market_conditions": { "$ref": "#/$defs/nullableString" },
+        "marketing_time": { "$ref": "#/$defs/nullableString" },
+        "neighborhood_price_trend": { "$ref": "#/$defs/nullableString" },
+        "supply_demand": { "$ref": "#/$defs/nullableString" },
+        "location_description": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "comparable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comp_id": { "type": "string" },
+        "address_redacted": { "$ref": "#/$defs/nullableString" },
+        "city": { "$ref": "#/$defs/nullableString" },
+        "state": { "$ref": "#/$defs/nullableString" },
+        "postal_code_redacted": { "$ref": "#/$defs/nullableString" },
+        "distance_miles": { "$ref": "#/$defs/nullableNumber" },
+        "sale_price": { "$ref": "#/$defs/nullableNumber" },
+        "sale_date": { "$ref": "#/$defs/nullableString" },
+        "data_source": { "$ref": "#/$defs/nullableString" },
+        "verification_source": { "$ref": "#/$defs/nullableString" },
+        "gla_sqft": { "$ref": "#/$defs/nullableNumber" },
+        "bedrooms": { "$ref": "#/$defs/nullableNumber" },
+        "bathrooms": { "$ref": "#/$defs/nullableNumber" },
+        "year_built": { "$ref": "#/$defs/nullableNumber" },
+        "condition": { "$ref": "#/$defs/nullableString" },
+        "quality": { "$ref": "#/$defs/nullableString" },
+        "site_size": { "$ref": "#/$defs/nullableString" },
+        "view": { "$ref": "#/$defs/nullableString" },
+        "location": { "$ref": "#/$defs/nullableString" },
+        "adjustments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/adjustment" }
+        },
+        "net_adjustment": { "$ref": "#/$defs/nullableNumber" },
+        "gross_adjustment": { "$ref": "#/$defs/nullableNumber" },
+        "adjusted_sale_price": { "$ref": "#/$defs/nullableNumber" },
+        "appraiser_comment": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "adjustment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "amount": { "$ref": "#/$defs/nullableNumber" },
+        "description": { "$ref": "#/$defs/nullableString" },
+        "raw_value": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "indicated_value_low": { "$ref": "#/$defs/nullableNumber" },
+        "indicated_value_high": { "$ref": "#/$defs/nullableNumber" },
+        "final_opinion_of_value": { "$ref": "#/$defs/nullableNumber" },
+        "sales_comparison_indicated_value": { "$ref": "#/$defs/nullableNumber" },
+        "cost_approach_indicated_value": { "$ref": "#/$defs/nullableNumber" },
+        "income_approach_indicated_value": { "$ref": "#/$defs/nullableNumber" },
+        "narrative": { "$ref": "#/$defs/nullableString" },
+        "confidence": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "comments": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject_comments": { "$ref": "#/$defs/nullableString" },
+        "comp_comments": { "$ref": "#/$defs/nullableString" },
+        "market_comments": { "$ref": "#/$defs/nullableString" },
+        "reconciliation_comments": { "$ref": "#/$defs/nullableString" },
+        "extra_comments": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["status", "warnings", "missing_fields", "redaction_notes", "parser_notes"],
+      "properties": {
+        "status": { "enum": ["candidate", "needs_review", "rejected"] },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "missing_fields": { "type": "array", "items": { "type": "string" } },
+        "redaction_notes": { "type": "array", "items": { "type": "string" } },
+        "parser_notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

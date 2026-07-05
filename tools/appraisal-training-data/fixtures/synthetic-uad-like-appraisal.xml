@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uad:UniformAppraisalDataset xmlns:uad="urn:synthetic:uad" xmlns:mismo="urn:synthetic:mismo">
+  <uad:AppraisalReport>
+    <uad:ReportType>Uniform Residential Appraisal Report</uad:ReportType>
+    <uad:FormType>1004</uad:FormType>
+    <uad:LoanPurpose>Purchase</uad:LoanPurpose>
+    <uad:AppraisalPurpose>Market value opinion</uad:AppraisalPurpose>
+    <uad:EffectiveDate>2026-02-15</uad:EffectiveDate>
+    <uad:InspectionDate>02/14/2026</uad:InspectionDate>
+    <uad:ReportDate>2026-02-17</uad:ReportDate>
+    <uad:SubjectProperty>
+      <uad:PropertyType>Single Family Residence</uad:PropertyType>
+      <uad:StreetAddress>123 Training Lane, Exampleville, IN 46220</uad:StreetAddress>
+      <uad:City>Exampleville</uad:City>
+      <uad:State>IN</uad:State>
+      <uad:PostalCode>46220</uad:PostalCode>
+      <uad:County>Sample County</uad:County>
+      <uad:Neighborhood>North Sample District</uad:Neighborhood>
+      <uad:SiteSize>0.22 acres</uad:SiteSize>
+      <uad:GrossLivingArea>1,850 sf</uad:GrossLivingArea>
+      <uad:Bedrooms>3</uad:Bedrooms>
+      <uad:Bathrooms>2.5</uad:Bathrooms>
+      <uad:YearBuilt>1998</uad:YearBuilt>
+      <uad:Condition>C3</uad:Condition>
+      <uad:Quality>Q4</uad:Quality>
+      <uad:View>Residential</uad:View>
+      <uad:DesignStyle>Two-story</uad:DesignStyle>
+      <uad:Basement>Partial</uad:Basement>
+      <uad:GarageCarport>2-car attached garage</uad:GarageCarport>
+    </uad:SubjectProperty>
+    <uad:Market>
+      <uad:MarketConditions>Stable</uad:MarketConditions>
+      <uad:MarketingTime>30-60 days</uad:MarketingTime>
+      <uad:NeighborhoodPriceTrend>Stable</uad:NeighborhoodPriceTrend>
+      <uad:SupplyDemand>In balance</uad:SupplyDemand>
+      <uad:LocationDescription>Suburban residential market area.</uad:LocationDescription>
+    </uad:Market>
+    <uad:ComparableSales>
+      <uad:ComparableSale>
+        <uad:CompId>1</uad:CompId>
+        <uad:StreetAddress>456 Synthetic Street, Exampleville, IN 46221</uad:StreetAddress>
+        <uad:City>Exampleville</uad:City>
+        <uad:State>IN</uad:State>
+        <uad:PostalCode>46221</uad:PostalCode>
+        <uad:DistanceMiles>0.4</uad:DistanceMiles>
+        <uad:SalePrice>$305,000</uad:SalePrice>
+        <uad:SaleDate>2025-12-01</uad:SaleDate>
+        <uad:DataSource>Synthetic MLS</uad:DataSource>
+        <uad:VerificationSource>Synthetic broker verification</uad:VerificationSource>
+        <uad:GrossLivingArea>1,760 sf</uad:GrossLivingArea>
+        <uad:Bedrooms>3</uad:Bedrooms>
+        <uad:Bathrooms>2</uad:Bathrooms>
+        <uad:YearBuilt>2001</uad:YearBuilt>
+        <uad:Condition>C3</uad:Condition>
+        <uad:Quality>Q4</uad:Quality>
+        <uad:SiteSize>0.20 acres</uad:SiteSize>
+        <uad:View>Residential</uad:View>
+        <uad:Location>Similar suburban location</uad:Location>
+        <uad:Adjustment>
+          <uad:Field>GLA</uad:Field>
+          <uad:Amount>$4,500</uad:Amount>
+          <uad:Description>Subject has larger GLA.</uad:Description>
+        </uad:Adjustment>
+        <uad:Adjustment>
+          <uad:Field>Bathrooms</uad:Field>
+          <uad:Amount>$3,000</uad:Amount>
+          <uad:Description>Subject has additional half bath.</uad:Description>
+        </uad:Adjustment>
+        <uad:NetAdjustment>$7,500</uad:NetAdjustment>
+        <uad:GrossAdjustment>$7,500</uad:GrossAdjustment>
+        <uad:AdjustedSalePrice>$312,500</uad:AdjustedSalePrice>
+        <uad:AppraiserComment>Most similar in condition and location.</uad:AppraiserComment>
+      </uad:ComparableSale>
+      <uad:ComparableSale>
+        <uad:CompId>2</uad:CompId>
+        <uad:StreetAddress>789 Sample Avenue, Exampleville, IN 46222</uad:StreetAddress>
+        <uad:City>Exampleville</uad:City>
+        <uad:State>IN</uad:State>
+        <uad:PostalCode>46222</uad:PostalCode>
+        <uad:DistanceMiles>0.8</uad:DistanceMiles>
+        <uad:SalePrice>$318,000</uad:SalePrice>
+        <uad:SaleDate>01/10/2026</uad:SaleDate>
+        <uad:DataSource>Synthetic MLS</uad:DataSource>
+        <uad:VerificationSource>Synthetic public record</uad:VerificationSource>
+        <uad:GrossLivingArea>1,940 sf</uad:GrossLivingArea>
+        <uad:Bedrooms>4</uad:Bedrooms>
+        <uad:Bathrooms>2.5</uad:Bathrooms>
+        <uad:YearBuilt>1995</uad:YearBuilt>
+        <uad:Condition>C3</uad:Condition>
+        <uad:Quality>Q4</uad:Quality>
+        <uad:SiteSize>0.25 acres</uad:SiteSize>
+        <uad:View>Residential</uad:View>
+        <uad:Location>Similar suburban location</uad:Location>
+        <uad:Adjustment>
+          <uad:Field>GLA</uad:Field>
+          <uad:Amount>-$4,500</uad:Amount>
+          <uad:Description>Comparable has larger GLA.</uad:Description>
+        </uad:Adjustment>
+        <uad:NetAdjustment>-$4,500</uad:NetAdjustment>
+        <uad:GrossAdjustment>$4,500</uad:GrossAdjustment>
+        <uad:AdjustedSalePrice>$313,500</uad:AdjustedSalePrice>
+        <uad:AppraiserComment>Supports upper end after size adjustment.</uad:AppraiserComment>
+      </uad:ComparableSale>
+      <uad:ComparableSale>
+        <uad:CompId>3</uad:CompId>
+        <uad:StreetAddress>321 Demo Drive, Exampleville, IN 46223</uad:StreetAddress>
+        <uad:City>Exampleville</uad:City>
+        <uad:State>IN</uad:State>
+        <uad:PostalCode>46223</uad:PostalCode>
+        <uad:DistanceMiles>1.1</uad:DistanceMiles>
+        <uad:SalePrice>$299,000</uad:SalePrice>
+        <uad:SaleDate>2025-11-20</uad:SaleDate>
+        <uad:DataSource>Synthetic MLS</uad:DataSource>
+        <uad:VerificationSource>Synthetic public record</uad:VerificationSource>
+        <uad:GrossLivingArea>1,820 sf</uad:GrossLivingArea>
+        <uad:Bedrooms>3</uad:Bedrooms>
+        <uad:Bathrooms>2</uad:Bathrooms>
+        <uad:YearBuilt>1990</uad:YearBuilt>
+        <uad:Condition>C4</uad:Condition>
+        <uad:Quality>Q4</uad:Quality>
+        <uad:SiteSize>0.19 acres</uad:SiteSize>
+        <uad:View>Residential</uad:View>
+        <uad:Location>Similar suburban location</uad:Location>
+        <uad:Adjustment>
+          <uad:Field>Condition</uad:Field>
+          <uad:Amount>$8,000</uad:Amount>
+          <uad:Description>Subject has superior condition.</uad:Description>
+        </uad:Adjustment>
+        <uad:NetAdjustment>$8,000</uad:NetAdjustment>
+        <uad:GrossAdjustment>$8,000</uad:GrossAdjustment>
+        <uad:AdjustedSalePrice>$307,000</uad:AdjustedSalePrice>
+        <uad:AppraiserComment>Useful bracket for condition.</uad:AppraiserComment>
+      </uad:ComparableSale>
+    </uad:ComparableSales>
+    <uad:Reconciliation>
+      <uad:IndicatedValueLow>$307,000</uad:IndicatedValueLow>
+      <uad:IndicatedValueHigh>$313,500</uad:IndicatedValueHigh>
+      <uad:SalesComparisonIndicatedValue>$312,000</uad:SalesComparisonIndicatedValue>
+      <uad:CostApproachIndicatedValue>$310,000</uad:CostApproachIndicatedValue>
+      <uad:IncomeApproachIndicatedValue></uad:IncomeApproachIndicatedValue>
+      <uad:FinalOpinionOfValue>$312,000</uad:FinalOpinionOfValue>
+      <uad:Narrative>Primary weight was placed on comparable sales 1 and 2 due to similarity in condition, quality, and proximity.</uad:Narrative>
+      <uad:Confidence>Moderate</uad:Confidence>
+    </uad:Reconciliation>
+    <uad:AppraiserComments>
+      <uad:SubjectComments>Synthetic subject data for local parser testing only.</uad:SubjectComments>
+      <uad:CompComments>Comparable sales are fake and intended for tests.</uad:CompComments>
+      <uad:MarketComments>Market conditions appear stable in this synthetic scenario.</uad:MarketComments>
+      <uad:ReconciliationComments>Selected comps bracket the final value indication.</uad:ReconciliationComments>
+      <uad:ExtraComments>Contact test@example.invalid or 317-555-0100 should be redacted.</uad:ExtraComments>
+    </uad:AppraiserComments>
+  </uad:AppraisalReport>
+</uad:UniformAppraisalDataset>

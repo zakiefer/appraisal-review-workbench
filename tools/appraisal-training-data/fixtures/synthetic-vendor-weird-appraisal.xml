@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VendorValuationEnvelope>
+  <ReportType>Vendor Weird Residential Appraisal</ReportType>
+  <EffectiveDate>2026-05-01</EffectiveDate>
+  <SubjectProperty>
+    <PropertyType>Single Family Residence</PropertyType>
+    <StreetAddress>808 Synthetic Mapping Way, Exampleville, IN 46220</StreetAddress>
+    <City>Exampleville</City>
+    <State>IN</State>
+    <PostalCode>46220</PostalCode>
+    <County>Sample County</County>
+    <GrossLivingArea>1750</GrossLivingArea>
+    <Bedrooms>3</Bedrooms>
+    <Bathrooms>2</Bathrooms>
+    <YearBuilt>1999</YearBuilt>
+  </SubjectProperty>
+  <VendorSubjectRatings>
+    <CondCode>C3</CondCode>
+    <QualCode>Q4</QualCode>
+  </VendorSubjectRatings>
+  <VendorSales>
+    <SaleRecord>
+      <Sequence>1</Sequence>
+      <SalePrice>$280,000</SalePrice>
+      <Metrics>
+        <VendorLivingSqFt>1680</VendorLivingSqFt>
+      </Metrics>
+      <Ratings>
+        <VendorCondition>C3</VendorCondition>
+        <VendorQuality>Q4</VendorQuality>
+      </Ratings>
+      <AdjustedSalePrice>$284,000</AdjustedSalePrice>
+    </SaleRecord>
+    <SaleRecord>
+      <Sequence>2</Sequence>
+      <SalePrice>$292,000</SalePrice>
+      <Metrics>
+        <VendorLivingSqFt>1815</VendorLivingSqFt>
+      </Metrics>
+      <Ratings>
+        <VendorCondition>C4</VendorCondition>
+        <VendorQuality>Q3</VendorQuality>
+      </Ratings>
+      <AdjustedSalePrice>$289,000</AdjustedSalePrice>
+    </SaleRecord>
+  </VendorSales>
+  <Reconciliation>
+    <FinalOpinionOfValue>$286,000</FinalOpinionOfValue>
+    <Narrative>Synthetic vendor mapping fixture narrative.</Narrative>
+  </Reconciliation>
+</VendorValuationEnvelope>
