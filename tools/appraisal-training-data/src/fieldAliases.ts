@@ -75,6 +75,8 @@ export const GRID_ROW_ALIASES = {
     "settlement date",
     "closed date"
   ],
+  "comparables.sale_date_raw": ["date of sale", "sale date raw", "settlement date raw"],
+  "comparables.contract_date": ["contract date", "contract date raw"],
   "comparables.adjusted_sale_price": [
     "adjusted sale price",
     "adjusted value",
@@ -84,14 +86,37 @@ export const GRID_ROW_ALIASES = {
     "adjusted sales price of comparable"
   ],
   "comparables.sale_price": ["sale price", "sales price", "contract price"],
+  "comparables.sales_price_per_gla": ["sales price per gross living area", "sale price per gla", "price per square foot"],
   "comparables.net_adjustment": ["net adjustment", "net adjusted", "net adjustment amount"],
+  "comparables.net_adjustment_percent": ["net adjustment percent", "net adjustment %"],
   "comparables.gross_adjustment": ["gross adjustment", "gross adjusted", "gross adjustment amount"],
+  "comparables.gross_adjustment_percent": ["gross adjustment percent", "gross adjustment %"],
+  "comparables.property_rights": ["property rights", "rights appraised"],
+  "comparables.sales_concessions": ["sales concessions", "sale concessions"],
+  "comparables.financing_concessions": ["financing concessions", "sale or financing concessions", "sale financing concessions"],
+  "comparables.total_rooms": ["rooms", "room count", "total room count", "above grade room count"],
   "comparables.bedrooms": ["bedrooms", "bedroom count", "beds"],
   "comparables.bathrooms": ["bathrooms", "bathroom count", "baths"],
+  "comparables.full_bathrooms": ["full baths", "full bathrooms"],
+  "comparables.half_bathrooms": ["half baths", "half bathrooms"],
   "comparables.year_built": ["actual age", "year built", "built year"],
+  "comparables.actual_age": ["actual age", "age", "effective age"],
   "comparables.site_size": ["site", "site size", "lot size"],
   "comparables.view": ["view"],
-  "comparables.location": ["location"]
+  "comparables.location": ["location"],
+  "comparables.design_style": ["design", "design style", "style", "design appeal"],
+  "comparables.basement_area_sqft": ["basement", "basement area", "below grade area"],
+  "comparables.basement_finished_sqft": ["finished basement area", "basement finished area", "below grade finished area"],
+  "comparables.basement_description": ["basement", "basement description", "below grade description"],
+  "comparables.basement_finish": ["basement finish", "below grade finish"],
+  "comparables.functional_utility": ["functional utility"],
+  "comparables.heating_cooling": ["heating cooling", "heating/cooling", "heat cool"],
+  "comparables.energy_efficient": ["energy efficient", "energy items"],
+  "comparables.garage_carport": ["car storage", "garage", "garage carport", "carport"],
+  "comparables.garage_spaces": ["garage spaces", "garage count", "garage car count"],
+  "comparables.carport_spaces": ["carport spaces", "carport count", "carport car count"],
+  "comparables.porch_deck": ["porch deck", "porch/deck", "porch", "deck", "patio"],
+  "comparables.fireplaces": ["fireplace", "fireplaces"]
 } as const;
 
 export const FIELD_ALIASES = {
@@ -225,8 +250,24 @@ export const FIELD_ALIASES = {
     "ProximityToSubjectDescription",
     "DISTANCE"
   ],
+  "comparables.property_rights": ["PropertyRights", "PropertyRightsAppraised", "RightsAppraised", "PROPERTY_RIGHTS"],
   "comparables.sale_price": ["SalePrice", "Price", "SalesPrice", "ContractPrice", "PropertySalesAmount", "SALE_PRICE"],
+  "comparables.sales_price_per_gla": [
+    "SalesPricePerGrossLivingAreaAmount",
+    "SalePricePerGrossLivingArea",
+    "SalePricePerGLA",
+    "SALE_PRICE_PER_GLA"
+  ],
   "comparables.sale_date": ["SaleDate", "ClosedDate", "ContractDate", "PropertySalesDate", "GSEShortDateDescription", "SALE_DATE"],
+  "comparables.sale_date_raw": ["DateOfSale", "DateOfSaleTime", "SaleDateTime", "DATE_OF_SALE"],
+  "comparables.contract_date": ["ContractDate", "GSEContractDate", "CONTRACT_DATE"],
+  "comparables.sales_concessions": ["SalesConcessions", "SaleConcessions", "SALE_CONCESSIONS"],
+  "comparables.financing_concessions": [
+    "FinancingConcessions",
+    "SaleOrFinancingConcessions",
+    "GSEFinancingType",
+    "FINANCING_CONCESSIONS"
+  ],
   "comparables.data_source": [
     "DataSource",
     "SaleDataSource",
@@ -252,9 +293,13 @@ export const FIELD_ALIASES = {
     "GrossLivingAreaSquareFeet",
     "GROSS_LIVING_AREA"
   ],
+  "comparables.total_rooms": ["TotalRoomCount", "RoomCount", "Rooms", "TOTAL_ROOMS"],
   "comparables.bedrooms": ["Bedrooms", "BedroomCount", "Beds", "TotalBedroomCount", "BEDROOMS"],
   "comparables.bathrooms": ["Bathrooms", "BathroomCount", "Baths", "TotalBathroomCount", "BATHROOMS"],
+  "comparables.full_bathrooms": ["FullBathroomCount", "FullBaths", "FULL_BATHROOMS"],
+  "comparables.half_bathrooms": ["HalfBathroomCount", "HalfBaths", "HALF_BATHROOMS"],
   "comparables.year_built": ["YearBuilt", "ActualAgeYearBuilt", "BuiltYear", "YEAR_BUILT"],
+  "comparables.actual_age": ["ActualAge", "Age", "EffectiveAge", "ACTUAL_AGE"],
   "comparables.condition": ["Condition", "PropertyCondition", "UADConditionRating", "GSEOverallConditionType", "CONDITION"],
   "comparables.quality": [
     "Quality",
@@ -266,6 +311,19 @@ export const FIELD_ALIASES = {
   "comparables.site_size": ["SiteSize", "LotSize", "SiteArea", "LandArea", "SITE_SIZE"],
   "comparables.view": ["View", "ViewDescription", "VIEW"],
   "comparables.location": ["Location", "LocationDescription", "LOCATION"],
+  "comparables.design_style": ["DesignStyle", "DesignAppeal", "Design", "_DesignDescription", "DESIGN_STYLE"],
+  "comparables.basement_area_sqft": ["BasementArea", "GSEBelowGradeTotalSquareFeetNumber", "BASEMENT_AREA"],
+  "comparables.basement_description": ["BasementArea", "BasementDescription", "BASEMENT_DESCRIPTION"],
+  "comparables.basement_finished_sqft": ["BasementFinishArea", "GSEBelowGradeFinishSquareFeetNumber", "BASEMENT_FINISHED_AREA"],
+  "comparables.basement_finish": ["BasementFinish", "BasementFinishDescription", "BASEMENT_FINISH"],
+  "comparables.functional_utility": ["FunctionalUtility", "FunctionalUtilityDescription", "FUNCTIONAL_UTILITY"],
+  "comparables.heating_cooling": ["HeatingCooling", "HeatingCoolingDescription", "HEATING_COOLING"],
+  "comparables.energy_efficient": ["EnergyEfficient", "EnergyEfficientDescription", "ENERGY_EFFICIENT"],
+  "comparables.garage_carport": ["CarStorage", "GarageCarport", "Garage", "Carport", "CAR_STORAGE"],
+  "comparables.garage_spaces": ["GarageSpaces", "GarageCount", "GarageCarCount", "GARAGE_SPACES"],
+  "comparables.carport_spaces": ["CarportSpaces", "CarportCount", "CarportCarCount", "CARPORT_SPACES"],
+  "comparables.porch_deck": ["PorchDeck", "Porch", "Deck", "Patio", "PORCH_DECK"],
+  "comparables.fireplaces": ["Fireplace", "Fireplaces", "FireplaceDescription", "FIREPLACE"],
   "comparables.net_adjustment": [
     "NetAdjustment",
     "NetAdjustmentAmount",
@@ -273,7 +331,13 @@ export const FIELD_ALIASES = {
     "SalePriceTotalAdjustmentAmount",
     "NET_ADJUSTMENT"
   ],
+  "comparables.net_adjustment_percent": ["SalesPriceTotalAdjustmentNetPercent", "NetAdjustmentPercent", "NET_ADJUSTMENT_PERCENT"],
   "comparables.gross_adjustment": ["GrossAdjustment", "GrossAdjustmentAmount", "TotalGrossAdjustment", "GROSS_ADJUSTMENT"],
+  "comparables.gross_adjustment_percent": [
+    "SalesPriceTotalAdjustmentGrossPercent",
+    "GrossAdjustmentPercent",
+    "GROSS_ADJUSTMENT_PERCENT"
+  ],
   "comparables.adjusted_sale_price": [
     "AdjustedSalePrice",
     "AdjustedPrice",

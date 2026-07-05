@@ -47,7 +47,11 @@ export interface ReviewUiCase {
     comp_id: string;
     comp_index: number;
     sale_price: number | null;
+    sales_price_per_gla: number | null;
     net_adjustment: number | null;
+    net_adjustment_percent: number | null;
+    gross_adjustment: number | null;
+    gross_adjustment_percent: number | null;
     expected_adjusted_sale_price: number | null;
     adjusted_sale_price: number | null;
     adjusted_price_source: "built-in" | "local-filled" | "arithmetic-resolved" | "unresolved" | "missing";
@@ -60,7 +64,37 @@ export interface ReviewUiCase {
     needs_manual_attention: boolean;
     condition: string | null;
     quality: string | null;
+    gla_sqft: number | null;
+    total_rooms: number | null;
+    bedrooms: number | null;
+    bathrooms: number | null;
+    full_bathrooms: number | null;
+    half_bathrooms: number | null;
+    site_size: string | null;
+    view: string | null;
+    location: string | null;
+    property_rights: string | null;
+    sales_concessions: string | null;
+    financing_concessions: string | null;
     sale_date: string | null;
+    sale_date_raw: string | null;
+    contract_date: string | null;
+    actual_age: number | null;
+    year_built: number | null;
+    design_style: string | null;
+    basement_area_sqft: number | null;
+    basement_finished_sqft: number | null;
+    basement_description: string | null;
+    basement_finish: string | null;
+    functional_utility: string | null;
+    heating_cooling: string | null;
+    energy_efficient: string | null;
+    garage_carport: string | null;
+    garage_spaces: number | null;
+    carport_spaces: number | null;
+    porch_deck: string | null;
+    fireplaces: string | null;
+    other_features: string[];
     warning_badge: string | null;
   }>;
   adjustment_sanity: Array<{
@@ -167,7 +201,11 @@ export function buildReviewUiCase(artifacts: ReviewCaseArtifacts, decision?: Dec
       comp_id: String(comp.comp_id ?? ""),
       comp_index: Number(comp.comp_index ?? 0),
       sale_price: salePrice,
+      sales_price_per_gla: numberOrNull(comp.sales_price_per_gla),
       net_adjustment: netAdjustment,
+      net_adjustment_percent: numberOrNull(comp.net_adjustment_percent),
+      gross_adjustment: numberOrNull(comp.gross_adjustment),
+      gross_adjustment_percent: numberOrNull(comp.gross_adjustment_percent),
       expected_adjusted_sale_price: expected,
       adjusted_sale_price: adjustedSalePrice,
       adjusted_price_source: source,
@@ -175,7 +213,37 @@ export function buildReviewUiCase(artifacts: ReviewCaseArtifacts, decision?: Dec
       needs_manual_attention: needsManualAttention,
       condition: stringOrNull(comp.condition),
       quality: stringOrNull(comp.quality),
+      gla_sqft: numberOrNull(comp.gla_sqft),
+      total_rooms: numberOrNull(comp.total_rooms),
+      bedrooms: numberOrNull(comp.bedrooms),
+      bathrooms: numberOrNull(comp.bathrooms),
+      full_bathrooms: numberOrNull(comp.full_bathrooms),
+      half_bathrooms: numberOrNull(comp.half_bathrooms),
+      site_size: stringOrNull(comp.site_size),
+      view: stringOrNull(comp.view),
+      location: stringOrNull(comp.location),
+      property_rights: stringOrNull(comp.property_rights),
+      sales_concessions: stringOrNull(comp.sales_concessions),
+      financing_concessions: stringOrNull(comp.financing_concessions),
       sale_date: stringOrNull(comp.sale_date),
+      sale_date_raw: stringOrNull(comp.sale_date_raw),
+      contract_date: stringOrNull(comp.contract_date),
+      actual_age: numberOrNull(comp.actual_age),
+      year_built: numberOrNull(comp.year_built),
+      design_style: stringOrNull(comp.design_style),
+      basement_area_sqft: numberOrNull(comp.basement_area_sqft),
+      basement_finished_sqft: numberOrNull(comp.basement_finished_sqft),
+      basement_description: stringOrNull(comp.basement_description),
+      basement_finish: stringOrNull(comp.basement_finish),
+      functional_utility: stringOrNull(comp.functional_utility),
+      heating_cooling: stringOrNull(comp.heating_cooling),
+      energy_efficient: stringOrNull(comp.energy_efficient),
+      garage_carport: stringOrNull(comp.garage_carport),
+      garage_spaces: numberOrNull(comp.garage_spaces),
+      carport_spaces: numberOrNull(comp.carport_spaces),
+      porch_deck: stringOrNull(comp.porch_deck),
+      fireplaces: stringOrNull(comp.fireplaces),
+      other_features: stringArray(comp.other_features),
       warning_badge: needsManualAttention ? "Needs human check" : null
     };
   });

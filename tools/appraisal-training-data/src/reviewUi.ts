@@ -1184,9 +1184,47 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     }
     .table-wrap {
       overflow-x: auto;
+      scrollbar-gutter: stable;
+      padding-bottom: 4px;
+    }
+    .table-wrap::-webkit-scrollbar {
+      height: 10px;
+    }
+    .table-wrap::-webkit-scrollbar-track {
+      background: #eef3f8;
+      border-radius: 999px;
+    }
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #b8c5d3;
+      border-radius: 999px;
+      border: 2px solid #eef3f8;
     }
     .review-section table {
-      min-width: 760px;
+      min-width: 1360px;
+    }
+    .stacked-cell {
+      display: grid;
+      gap: 3px;
+      min-width: 72px;
+      max-width: 190px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    .stacked-cell strong {
+      font-size: 12px;
+      color: #263244;
+    }
+    .stacked-cell small {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+    .stacked-cell small span {
+      overflow-wrap: anywhere;
     }
     .narrative {
       margin: 0 0 14px;
@@ -3222,7 +3260,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     }
     .focused-review-layout {
       display: block;
-      max-width: 1180px;
+      width: min(1540px, 100%);
+      max-width: none;
     }
     .focused-review-layout .case-main {
       display: grid;
@@ -3404,6 +3443,218 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     }
     .focused-decision-box.yellow {
       border-left-color: #c78105;
+    }
+    .repair-plan-panel {
+      display: grid;
+      gap: 12px;
+      margin: 0 0 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #c78105;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+    .repair-plan-panel.red {
+      border-left-color: var(--red);
+      background: #fffafa;
+    }
+    .repair-plan-panel.yellow {
+      background: #fffdf8;
+    }
+    .repair-plan-panel.ready,
+    .repair-plan-panel.green {
+      border-left-color: var(--green);
+      background: #fbfdfc;
+    }
+    .repair-plan-header {
+      display: grid;
+      gap: 4px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .repair-plan-header span,
+    .repair-kind,
+    .repair-meta dt,
+    .mapping-signal span,
+    .repair-command-details > summary,
+    .raw-problems > summary {
+      color: #7b8796;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .repair-plan-header h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .repair-plan-header p {
+      margin: 0;
+      color: #465466;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .repair-issue-list {
+      display: grid;
+      gap: 10px;
+    }
+    .repair-issue-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 150px;
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #8795a6;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+    .repair-issue-row.ready {
+      border-left-color: var(--green);
+    }
+    .repair-issue-row.attention {
+      border-left-color: #c78105;
+    }
+    .repair-issue-row.missing {
+      border-left-color: var(--red);
+    }
+    .repair-issue-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f7f9fb;
+      color: #465466;
+      font-weight: 950;
+    }
+    .repair-issue-main {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .repair-issue-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .repair-issue-title strong {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+    .repair-kind {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f7f9fb;
+      color: #536173;
+      letter-spacing: 0.02em;
+    }
+    .repair-issue-main p {
+      margin: 0;
+      color: #253044;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .repair-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+    }
+    .repair-meta div {
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+    }
+    .repair-meta dt {
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+    .repair-meta dd {
+      margin: 0;
+      color: #465466;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .mapping-signal {
+      display: grid;
+      gap: 4px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #8795a6;
+      border-radius: 4px;
+      background: #f7f9fb;
+    }
+    .mapping-signal.ready {
+      border-left-color: var(--green);
+      background: #f7fbf9;
+    }
+    .mapping-signal.attention {
+      border-left-color: #c78105;
+      background: #fffdf7;
+    }
+    .mapping-signal.missing {
+      border-left-color: var(--red);
+      background: #fff8f8;
+    }
+    .mapping-signal code {
+      color: #334155;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+    .repair-actions {
+      display: grid;
+      gap: 6px;
+    }
+    .repair-actions button {
+      min-height: 30px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      background: #f7f9fb;
+      border-color: var(--line);
+      color: #334155;
+      font-size: 12px;
+    }
+    .repair-actions button:hover {
+      background: #eef3f8;
+    }
+    .repair-command-details,
+    .raw-problems {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+      overflow: hidden;
+    }
+    .repair-command-details > summary,
+    .raw-problems > summary {
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+    .raw-problems .decision-problems {
+      margin: 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .repair-command-details .command-panel {
+      padding: 0 12px 12px;
     }
     .decision-problems {
       margin: 0 0 12px;
@@ -3616,6 +3867,8 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       .plain-review-card,
       .simple-pick,
       .decision-box-heading,
+      .repair-issue-row,
+      .repair-meta,
       .button-meaning-grid,
       .button-meaning-grid.red,
       .case-utility-details {
@@ -3735,6 +3988,46 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     const humanize = value => fmt(value).replace(/_/g, ' ');
     const humanizeList = values => Array.isArray(values) && values.length ? values.map(humanize).join('; ') : 'None';
     const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmtNumber = value => typeof value === 'number' ? value.toLocaleString('en-US') : 'Missing';
+    const fmtSqft = value => typeof value === 'number' ? \`\${value.toLocaleString('en-US')} sf\` : 'Missing';
+    const present = value => value != null && value !== '' && value !== 'Missing';
+    const detailJoin = values => values.filter(present).join(' · ') || 'Missing';
+    const stackedCell = (primary, details = []) => {
+      const cleanPrimary = fmt(primary);
+      const detailItems = details.filter(present).map(detail => \`<span>\${escape(detail)}</span>\`).join('');
+      return \`<div class="stacked-cell"><strong>\${escape(cleanPrimary)}</strong>\${detailItems ? \`<small>\${detailItems}</small>\` : ''}</div>\`;
+    };
+    const compBathText = comp => {
+      if (typeof comp.full_bathrooms === 'number' || typeof comp.half_bathrooms === 'number') {
+        return [typeof comp.full_bathrooms === 'number' ? \`\${comp.full_bathrooms} full\` : null, typeof comp.half_bathrooms === 'number' ? \`\${comp.half_bathrooms} half\` : null].filter(Boolean).join(' / ');
+      }
+      return fmt(comp.bathrooms);
+    };
+    const compRoomText = comp => detailJoin([
+      typeof comp.total_rooms === 'number' ? \`\${comp.total_rooms} rms\` : null,
+      typeof comp.bedrooms === 'number' ? \`\${comp.bedrooms} br\` : null,
+      compBathText(comp)
+    ]);
+    const compSiteViewText = comp => detailJoin([comp.site_size, comp.view, comp.location]);
+    const compAgeDesignText = comp => detailJoin([
+      typeof comp.actual_age === 'number' ? \`\${comp.actual_age} yrs\` : null,
+      typeof comp.year_built === 'number' ? \`built \${comp.year_built}\` : null,
+      comp.design_style
+    ]);
+    const compGarageBasementText = comp => detailJoin([
+      comp.garage_carport,
+      typeof comp.garage_spaces === 'number' ? \`\${comp.garage_spaces} gar\` : null,
+      typeof comp.carport_spaces === 'number' ? \`\${comp.carport_spaces} carport\` : null,
+      comp.basement_description || fmtSqft(comp.basement_area_sqft),
+      comp.basement_finish,
+      comp.porch_deck,
+      comp.fireplaces
+    ]);
+    const compDateText = comp => detailJoin([
+      comp.sale_date,
+      comp.contract_date ? \`contract \${comp.contract_date}\` : null,
+      comp.sale_date_raw && comp.sale_date_raw !== comp.sale_date ? comp.sale_date_raw : null
+    ]);
 
     async function load() {
       if (isStaticDemo) {
@@ -4171,9 +4464,9 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
 
     function approvalDecisionContext(item, items) {
       if (item.recommendation.level === 'red') {
-        return 'This case is not training-ready. Use Needs Fix if a parser or mapping repair could recover it. Use Reject if this source should stay out of training data.';
+        return 'This case is not training-ready. Use the repair rows to see what is missing. Send it to the repair queue if mapping or parser work could recover it; reject only if this source should stay out of training data.';
       }
-      return \`Approve is locked until all \${items.length} things are checked. If anything is not acceptable, write a note and use Needs Fix or Reject.\`;
+      return \`Approve is locked until all \${items.length} things are checked. If any repair row still needs work, send it to the repair queue instead of approving.\`;
     }
 
     function approvalTitleKey(item) {
@@ -4807,22 +5100,22 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       if (item.recommendation.level === 'red') {
         return {
           title: 'This one is not ready.',
-          body: 'It is missing important data. Click the big Needs Fix button unless you are sure this should never be used.',
+          body: 'It is missing appraisal evidence. Use the fix worksheet below to see exactly what is broken and what kind of repair it needs.',
           steps: [
-            'Use the big Needs Fix button.',
-            'Only use Reject if this should never be used.',
-            'You do not have to write a note; the button fills one in.'
+            'Read each row in What needs fixing.',
+            'Send it to the repair queue if mapping or parser work could recover it.',
+            'Reject only if this source should never be used.'
           ]
         };
       }
       if (item.recommendation.level === 'yellow') {
         return {
           title: 'This one might be usable.',
-          body: \`If you are not completely sure, click the big Needs Fix button. Only approve after you check all \${approvals.length} thing\${approvals.length === 1 ? '' : 's'} below.\`,
+          body: \`Use the fix worksheet first. Approve only after all \${approvals.length} thing\${approvals.length === 1 ? '' : 's'} are checked or the missing items are truly acceptable.\`,
           steps: [
-            'When unsure, click Needs Fix.',
-            'Approve only after every thing is checked.',
-            'Reject only if this should never be used.'
+            'Check each listed issue.',
+            'Approve only when the evidence is acceptable.',
+            'Use repair queue when a mapping or parser fix is needed.'
           ]
         };
       }
@@ -4857,6 +5150,264 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
             <small class="muted">Case \${escape(index + 1)} of \${escape(visibleCount)}</small>
           </div>
         </section>
+      \`;
+    }
+
+    function repairDefinitions() {
+      return {
+        missing_subject_condition: {
+          key: 'subject.condition',
+          title: 'Subject condition rating',
+          problem: 'The subject C-rating is missing.',
+          fixType: 'Map field',
+          target: 'subject.condition',
+          area: '1004 subject improvement and sales comparison grid',
+          why: 'Condition affects comparable selection and adjustment support. Use C1 through C5 when the report provides a UAD condition rating.',
+          next: 'Confirm the XML path that carries the subject condition rating, then add or verify that mapping.'
+        },
+        missing_subject_quality: {
+          key: 'subject.quality',
+          title: 'Subject quality rating',
+          problem: 'The subject Q-rating is missing.',
+          fixType: 'Map field',
+          target: 'subject.quality',
+          area: '1004 subject improvement and sales comparison grid',
+          why: 'Quality affects comparable selection and adjustment support. Use Q1 through Q5 when the report provides a UAD quality rating.',
+          next: 'Confirm the XML path that carries the subject quality rating, then add or verify that mapping.'
+        },
+        missing_subject_gla: {
+          key: 'subject.gla_sqft',
+          title: 'Subject gross living area',
+          problem: 'Subject GLA is missing.',
+          fixType: 'Map field',
+          target: 'subject.gla_sqft',
+          area: '1004 improvements section and sales comparison grid',
+          why: 'GLA is a core physical characteristic and often a major sales comparison adjustment driver.',
+          next: 'Map the subject gross living area field, or document why this case cannot be used.'
+        },
+        missing_comparable_gla: {
+          key: 'comparables.gla_sqft',
+          title: 'Comparable gross living area',
+          problem: 'Comparable GLA is missing.',
+          fixType: 'Map field',
+          target: 'comparables.gla_sqft',
+          area: '1004 sales comparison grid',
+          why: 'Comparable GLA is needed to support size comparison and GLA adjustments.',
+          next: 'Verify the sales comparison grid row that carries comparable GLA and add the mapping.'
+        },
+        missing_comparables: {
+          key: 'selected_comparables',
+          title: 'Selected comparable sales',
+          problem: 'No selected comparable sales were extracted.',
+          fixType: 'Parser/grid extraction',
+          target: 'selected_comparables',
+          area: '1004 sales comparison approach grid',
+          why: 'A training example cannot teach selected comp analysis without the comparable sale rows.',
+          next: 'Inspect the sales comparison grid shape and repair comparable row extraction before approval.'
+        },
+        comparables: {
+          key: 'selected_comparables',
+          title: 'Selected comparable sales',
+          problem: 'Comparable sale data is missing or incomplete.',
+          fixType: 'Parser/grid extraction',
+          target: 'selected_comparables',
+          area: '1004 sales comparison approach grid',
+          why: 'The selected comp set is the evidence base for the sales comparison indication.',
+          next: 'Inspect comparable row extraction and map missing sales comparison fields.'
+        },
+        missing_final_opinion_of_value: {
+          key: 'reconciliation.final_opinion_of_value',
+          title: 'Final opinion of value',
+          problem: 'The final opinion of value is missing.',
+          fixType: 'Map field',
+          target: 'reconciliation.final_opinion_of_value',
+          area: '1004 reconciliation section',
+          why: 'The final value is the conclusion the model is supposed to learn to support.',
+          next: 'Map the final opinion/concluded market value field, or keep the case out of approved training data.'
+        },
+        reconciliation_narrative_missing: {
+          key: 'reconciliation.narrative',
+          title: 'Reconciliation narrative',
+          problem: 'The reconciliation narrative is missing.',
+          fixType: 'Map field',
+          target: 'reconciliation.narrative',
+          area: '1004 reconciliation section and addenda',
+          why: 'The narrative explains how the value indications were reconciled and why the conclusion is supported.',
+          next: 'Map the reconciliation/commentary text or document that this source cannot support the training answer.'
+        },
+        parse_path_low_confidence: {
+          key: 'parser.confidence',
+          title: 'Parser confidence',
+          problem: 'The parser used a low-confidence path.',
+          fixType: 'Parser review',
+          target: 'parser.path_selection',
+          area: 'XML path discovery and parser normalization',
+          why: 'Low-confidence paths can put the right-looking value in the wrong appraisal field.',
+          next: 'Open evidence, compare against the form/PDF, then tighten aliases or parser path selection.'
+        }
+      };
+    }
+
+    function repairDefinitionForMissing(field) {
+      const definitions = repairDefinitions();
+      if (definitions[field]) return definitions[field];
+      const normalized = String(field || '').toLowerCase();
+      if (normalized.includes('subject_condition')) return definitions.missing_subject_condition;
+      if (normalized.includes('subject_quality')) return definitions.missing_subject_quality;
+      if (normalized.includes('subject_gla')) return definitions.missing_subject_gla;
+      if (normalized.includes('comparable_gla')) return definitions.missing_comparable_gla;
+      if (normalized.includes('comparables')) return definitions.comparables;
+      if (normalized.includes('final_opinion') || normalized.includes('final_value')) return definitions.missing_final_opinion_of_value;
+      if (normalized.includes('narrative')) return definitions.reconciliation_narrative_missing;
+      return {
+        key: normalized || 'unknown',
+        title: humanize(field),
+        problem: \`\${humanize(field)} is missing or flagged.\`,
+        fixType: 'Mapping or parser review',
+        target: normalized.replace(/^missing_/, '').replaceAll('_', '.'),
+        area: 'XML field discovery',
+        why: 'The case should not be approved until this missing item is either fixed or documented as acceptable.',
+        next: 'Use mapping review or source evidence to decide whether this should be mapped, ignored, or rejected.'
+      };
+    }
+
+    function repairPlanItems(item) {
+      const items = [];
+      const seen = new Set();
+      const add = definition => {
+        if (!definition || seen.has(definition.key)) return;
+        seen.add(definition.key);
+        items.push(definition);
+      };
+      const definitions = repairDefinitions();
+      if (item.comps.length === 0) add(definitions.missing_comparables);
+      if (item.reconciliation.final_opinion_of_value == null) add(definitions.missing_final_opinion_of_value);
+      if (!item.reconciliation.narrative) add(definitions.reconciliation_narrative_missing);
+      for (const field of item.missing_fields || []) add(repairDefinitionForMissing(field));
+      for (const warning of item.warnings || []) {
+        if (warning === 'redacted_postal_code' || warning === 'redacted_street_address') continue;
+        add(repairDefinitionForMissing(warning));
+      }
+      const adjustedRows = item.comps.filter(comp => comp.needs_manual_attention).length;
+      if (adjustedRows > 0) {
+        add({
+          key: 'comparables.adjusted_sale_price',
+          title: 'Adjusted sale price rows',
+          problem: \`\${adjustedRows} adjusted sale price row\${adjustedRows === 1 ? '' : 's'} need human checking.\`,
+          fixType: 'Formula/value check',
+          target: 'comparables.adjusted_sale_price',
+          area: '1004 sales comparison adjustment grid',
+          why: 'Adjusted sale price should reconcile to sale price plus net adjustments, or the source conflict must be explained.',
+          next: 'Check the adjustment sanity rows and confirm the extracted adjusted sale price is correct.'
+        });
+      }
+      return items;
+    }
+
+    function mappingSignal(target) {
+      const mapping = workbench?.mapping || {};
+      const verified = (mapping.verified_mappings || []).filter(row => row.field === target);
+      if (verified.length) {
+        return {
+          tone: 'ready',
+          label: 'Verified mapping exists',
+          detail: verified[0].path || 'Local mapping file',
+          path: verified[0].path || ''
+        };
+      }
+      const application = (mapping.validation?.applications || []).find(row => row.field === target);
+      if (application) {
+        return {
+          tone: 'ready',
+          label: \`Mapping is applying to \${application.value_count ?? 0} value\${application.value_count === 1 ? '' : 's'}\`,
+          detail: application.path || 'Validation output',
+          path: application.path || ''
+        };
+      }
+      const packet = (mapping.review_targets || []).find(row => row.target === target);
+      if (packet) {
+        const top = packet.top_candidates?.[0] || null;
+        return {
+          tone: top?.recommendation === 'likely_accept' ? 'ready' : 'attention',
+          label: \`\${packet.candidates} mapping candidate\${packet.candidates === 1 ? '' : 's'} available\`,
+          detail: top ? \`\${top.recommendation} · score \${top.score} · \${top.dominant_shape || 'shape unknown'}\` : 'No top candidate loaded',
+          path: top?.path || ''
+        };
+      }
+      return {
+        tone: 'missing',
+        label: target.includes('selected_comparables') || target.includes('parser')
+          ? 'Parser/grid repair needed'
+          : 'No mapping candidate loaded yet',
+        detail: 'Refresh inspection/mapping packets or compare with the source report.',
+        path: ''
+      };
+    }
+
+    function repairPlanPanel(item, issues) {
+      const repairs = repairPlanItems(item);
+      if (!repairs.length) {
+        return \`
+          <div class="repair-plan-panel ready">
+            <div class="repair-plan-header">
+              <span>What needs fixing</span>
+              <h2>No repair blockers found</h2>
+              <p>Use the approval checklist below as a final spot-check before training export.</p>
+            </div>
+          </div>
+        \`;
+      }
+      return \`
+        <div class="repair-plan-panel \${escape(item.recommendation.level)}">
+          <div class="repair-plan-header">
+            <span>What needs fixing</span>
+            <h2>\${escape(repairs.length)} issue\${repairs.length === 1 ? '' : 's'} to resolve before approval</h2>
+            <p>Each row is a separate repair question. Needs Fix sends this case to the repair queue; it is not approval.</p>
+          </div>
+          <div class="repair-issue-list">
+            \${repairs.map((repair, repairIndex) => repairIssueRow(repair, repairIndex)).join('')}
+          </div>
+          <details class="raw-problems">
+            <summary>Show raw parser warnings</summary>
+            \${decisionProblems(issues)}
+          </details>
+          <details class="repair-command-details">
+            <summary>Show commands to refresh mapping work</summary>
+            \${commandPanel(inspectCommand() + '\\n\\n' + mappingCommands())}
+          </details>
+        </div>
+      \`;
+    }
+
+    function repairIssueRow(repair, repairIndex) {
+      const signal = mappingSignal(repair.target || '');
+      const note = \`Needs Fix: \${repair.title} - \${repair.next}\`;
+      return \`
+        <article class="repair-issue-row \${escape(signal.tone)}">
+          <div class="repair-issue-number">\${escape(repairIndex + 1)}</div>
+          <div class="repair-issue-main">
+            <div class="repair-issue-title">
+              <strong>\${escape(repair.title)}</strong>
+              <span class="repair-kind">\${escape(repair.fixType)}</span>
+            </div>
+            <p>\${escape(repair.problem)}</p>
+            <dl class="repair-meta">
+              <div><dt>Why it matters</dt><dd>\${escape(repair.why)}</dd></div>
+              <div><dt>Where to fix</dt><dd>\${escape(repair.area)}</dd></div>
+              <div><dt>Target field</dt><dd>\${escape(repair.target)}</dd></div>
+            </dl>
+            <div class="mapping-signal \${escape(signal.tone)}">
+              <span>\${escape(signal.label)}</span>
+              <code>\${escape(signal.path || signal.detail)}</code>
+            </div>
+          </div>
+          <div class="repair-actions">
+            <button type="button" onclick="openEvidenceDrawer()">Evidence</button>
+            <button type="button" onclick="setView('mapping')">Mapping</button>
+            <button type="button" onclick="setView('repairs')">Repairs</button>
+            <button type="button" data-note-template="\${escape(note)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add note</button>
+          </div>
+        </article>
       \`;
     }
 
@@ -4900,7 +5451,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       return \`
         <div class="decision-helper">
           <span>Note rule</span>
-          <p>\${isRed ? 'You can leave the note box alone. The big Needs Fix button will add a basic note for you.' : 'If you are unsure, click the big Needs Fix button. It will add a basic note for you.'}</p>
+          <p>\${isRed ? 'The repair queue button will add a basic note if you leave the box empty.' : 'If you are unsure, send it to the repair queue. The button will add a basic note if you leave the box empty.'}</p>
         </div>
       \`;
     }
@@ -4920,11 +5471,11 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       }
       return {
         tone: level === 'red' ? 'red' : 'yellow',
-        label: 'If you are not sure',
-        title: 'Click Needs Fix.',
-        body: 'This does not delete anything. It just saves the case for repair or another look later.',
+        label: 'Primary action',
+        title: 'Send this case to repair.',
+        body: 'This does not approve or delete the case. It saves the case so the mapping/parser issues above can be fixed later.',
         buttonClass: 'yellow',
-        buttonText: 'Click this: Needs Fix - repair later',
+        buttonText: 'Send to repair queue',
         status: 'needs_revision'
       };
     }
@@ -4953,7 +5504,7 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           <summary>Other choices</summary>
           <div class="other-choice-actions">
             \${approveChoice}
-            <button class="yellow" onclick="quickDecision('needs_revision')">Needs Fix - repair later</button>
+            <button class="yellow" onclick="quickDecision('needs_revision')">Needs Fix - repair queue</button>
             <button class="red" onclick="quickDecision('rejected')">Reject - do not use</button>
             <button onclick="quickDecision('skipped')">Skip - decide later</button>
           </div>
@@ -5001,15 +5552,15 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           <div class="decision-box-heading">
             <div>
               <span>Decision</span>
-              <h2>What should I click?</h2>
+              <h2>Repair, approve, or reject?</h2>
             </div>
             <p>\${escape(approvalDecisionContext(item, approvals))}</p>
           </div>
+          \${repairPlanPanel(item, issues)}
           \${simplePickPanel(item)}
-          \${decisionProblems(issues)}
           \${isRed ? '' : approvalStatementSummary(item.case_id, approvals)}
           \${decisionHelper(isRed)}
-          <textarea id="notes" placeholder="\${isRed ? 'Optional: the big Needs Fix button will add a note for you.' : 'Optional: the big Needs Fix button will add a note for you.'}">\${escape(item.decision.notes || '')}</textarea>
+          <textarea id="notes" placeholder="Optional. Use Add note on a repair row, or leave blank and the repair queue button will add a basic note.">\${escape(item.decision.notes || '')}</textarea>
           \${otherChoices(item)}
           \${isRed ? approvalOverridePanel(item.case_id, approvals) : ''}
           <p id="saveMsg" class="save-msg"></p>
@@ -5060,19 +5611,30 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Comp</th><th>Sale price</th><th>Net adj.</th><th>Adjusted</th><th>Source</th><th>Condition</th><th>Quality</th><th>Sale date</th><th>Check</th></tr></thead>
+              <thead><tr><th>Comp</th><th>Price</th><th>Net adj.</th><th>Indicated</th><th>C / Q</th><th>GLA</th><th>Rooms</th><th>Site / view</th><th>Age / design</th><th>Garage / basement</th><th>Sale timing</th><th>Check</th></tr></thead>
               <tbody>\${displayedComps.length ? displayedComps.map(comp => \`
                 <tr>
                   <td>\${escape(comp.comp_index)}</td>
-                  <td>\${escape(fmtMoney(comp.sale_price))}</td>
-                  <td>\${escape(fmtMoney(comp.net_adjustment))}</td>
-                  <td>\${escape(fmtMoney(comp.adjusted_sale_price))}</td>
-                  <td>\${escape(comp.adjusted_price_source)}</td>
-                  <td>\${escape(fmt(comp.condition))}</td>
-                  <td>\${escape(fmt(comp.quality))}</td>
-                  <td>\${escape(fmt(comp.sale_date))}</td>
+                  <td>\${stackedCell(fmtMoney(comp.sale_price), [
+                    typeof comp.sales_price_per_gla === 'number' ? \`\${fmtMoney(comp.sales_price_per_gla)}/GLA\` : null,
+                    comp.property_rights,
+                    comp.financing_concessions,
+                    comp.sales_concessions
+                  ])}</td>
+                  <td>\${stackedCell(fmtMoney(comp.net_adjustment), [
+                    typeof comp.net_adjustment_percent === 'number' ? \`\${comp.net_adjustment_percent}% net\` : null,
+                    typeof comp.gross_adjustment_percent === 'number' ? \`\${comp.gross_adjustment_percent}% gross\` : null
+                  ])}</td>
+                  <td>\${stackedCell(fmtMoney(comp.adjusted_sale_price), [humanize(comp.adjusted_price_source)])}</td>
+                  <td>\${stackedCell(detailJoin([comp.condition, comp.quality]), [])}</td>
+                  <td>\${stackedCell(fmtSqft(comp.gla_sqft), [])}</td>
+                  <td>\${stackedCell(compRoomText(comp), [])}</td>
+                  <td>\${stackedCell(compSiteViewText(comp), [])}</td>
+                  <td>\${stackedCell(compAgeDesignText(comp), [])}</td>
+                  <td>\${stackedCell(compGarageBasementText(comp), [])}</td>
+                  <td>\${stackedCell(compDateText(comp), [])}</td>
                   <td>\${badge(comp.adjusted_price_badge)}</td>
-                </tr>\`).join('') : \`<tr><td class="empty-table" colspan="9">\${filters.attentionOnlyRows ? 'No comparable rows currently need manual attention.' : 'No selected comparables were extracted for this case.'}</td></tr>\`}
+                </tr>\`).join('') : \`<tr><td class="empty-table" colspan="12">\${filters.attentionOnlyRows ? 'No comparable rows currently need manual attention.' : 'No selected comparables were extracted for this case.'}</td></tr>\`}
               </tbody>
             </table>
           </div>
@@ -5209,6 +5771,13 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function openEvidenceDrawer() {
+      const drawer = document.querySelector('.evidence-drawer');
+      if (!drawer) return;
+      drawer.open = true;
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function setAttentionOnlyRows(value) {
       filters.attentionOnlyRows = value;
       renderCase();
@@ -5338,9 +5907,11 @@ function buildHtml(options: ReviewUiOptions, staticPayload: StaticReviewUiPayloa
     function defaultDecisionNote(item, status) {
       if (!item) return '';
       if (status === 'needs_revision') {
-        if (item.recommendation.level === 'red') return 'Missing important data; needs repair.';
-        if (item.recommendation.level === 'yellow') return 'Needs another look or repair before approval.';
-        return 'Needs review or repair before approval.';
+        const repairs = repairPlanItems(item).slice(0, 4).map(repair => repair.title);
+        const suffix = repairs.length ? \`: \${repairs.join('; ')}\` : '.';
+        if (item.recommendation.level === 'red') return \`Send to repair queue. Blocking appraisal evidence is missing\${suffix}\`;
+        if (item.recommendation.level === 'yellow') return \`Send to repair queue. Review or mapping repair needed before approval\${suffix}\`;
+        return \`Send to repair queue. Needs review or repair before approval\${suffix}\`;
       }
       if (status === 'rejected') return 'Do not use this case for training.';
       return '';

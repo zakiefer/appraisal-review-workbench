@@ -318,14 +318,32 @@ function setScalar(
 }
 
 function convertComparableValue(field: keyof ComparableSale, value: string): unknown {
-  if (field === "gla_sqft") return normalizeSquareFeet(value);
+  if (["gla_sqft", "basement_area_sqft", "basement_finished_sqft"].includes(String(field))) {
+    return normalizeSquareFeet(value);
+  }
   if (["sale_price", "adjusted_sale_price", "net_adjustment", "gross_adjustment"].includes(String(field))) {
     return normalizeCurrency(value);
   }
-  if (["bedrooms", "bathrooms", "year_built", "distance_miles"].includes(String(field))) {
+  if (
+    [
+      "bedrooms",
+      "bathrooms",
+      "full_bathrooms",
+      "half_bathrooms",
+      "total_rooms",
+      "year_built",
+      "actual_age",
+      "distance_miles",
+      "sales_price_per_gla",
+      "garage_spaces",
+      "carport_spaces",
+      "net_adjustment_percent",
+      "gross_adjustment_percent"
+    ].includes(String(field))
+  ) {
     return normalizeNumber(value);
   }
-  if (field === "sale_date") return normalizeDate(value);
+  if (field === "sale_date" || field === "contract_date") return normalizeDate(value);
   return normalizeString(value);
 }
 
@@ -349,21 +367,47 @@ function emptyComparable(index: number): ComparableSale {
     postal_code_redacted: null,
     distance_miles: null,
     sale_price: null,
+    sales_price_per_gla: null,
     sale_date: null,
+    sale_date_raw: null,
+    contract_date: null,
     data_source: null,
     verification_source: null,
+    property_rights: null,
+    sales_concessions: null,
+    financing_concessions: null,
     gla_sqft: null,
+    total_rooms: null,
     bedrooms: null,
     bathrooms: null,
+    full_bathrooms: null,
+    half_bathrooms: null,
     year_built: null,
+    actual_age: null,
     condition: null,
     quality: null,
     site_size: null,
     view: null,
     location: null,
+    design_style: null,
+    basement_area_sqft: null,
+    basement_finished_sqft: null,
+    basement_description: null,
+    basement_finish: null,
+    functional_utility: null,
+    heating_cooling: null,
+    energy_efficient: null,
+    garage_carport: null,
+    garage_spaces: null,
+    carport_spaces: null,
+    porch_deck: null,
+    fireplaces: null,
+    other_features: null,
     adjustments: [],
     net_adjustment: null,
+    net_adjustment_percent: null,
     gross_adjustment: null,
+    gross_adjustment_percent: null,
     adjusted_sale_price: null,
     appraiser_comment: null
   };

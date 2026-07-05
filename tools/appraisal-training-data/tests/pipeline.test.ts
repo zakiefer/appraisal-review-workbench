@@ -671,6 +671,127 @@ describe("appraisal XML training data pipeline", () => {
     expect(() => assertNoInputLeakage(buildTrainingCase(normalized).input_case)).not.toThrow();
   });
 
+  it("promotes 1004 comparable adjustment rows into structured comparable facts", () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <SubjectProperty>
+    <PropertyType>Single family</PropertyType>
+    <City>Exampleville</City>
+    <State>IN</State>
+    <GrossLivingAreaSquareFeet>1778</GrossLivingAreaSquareFeet>
+  </SubjectProperty>
+  <ComparableSale>
+    <CompId>1</CompId>
+    <PropertySalesAmount>$250,000</PropertySalesAmount>
+    <SalesPricePerGrossLivingAreaAmount>$128.47</SalesPricePerGrossLivingAreaAmount>
+    <GSEShortDateDescription>s02/25;c01/25</GSEShortDateDescription>
+    <SalePriceTotalAdjustmentAmount>-$19,580</SalePriceTotalAdjustmentAmount>
+    <SalesPriceTotalAdjustmentNetPercent>-7.8</SalesPriceTotalAdjustmentNetPercent>
+    <SalesPriceTotalAdjustmentGrossPercent>9.8</SalesPriceTotalAdjustmentGrossPercent>
+    <AdjustedSalesPriceAmount>$230,420</AdjustedSalesPriceAmount>
+    <ROOM_ADJUSTMENT TotalRoomCount="11" TotalBedroomCount="4" TotalBathroomCount="2.1" RoomAdjustmentAmount="-$2,500" />
+    <SALE_PRICE_ADJUSTMENT Type="PropertyRights" Description="Fee Simple" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="FinancingConcessions" Description="Conventional;0" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="DateOfSale" Description="s02/25;c01/25" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="Location" Description="N;Res" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="SiteArea" Description="1.25 ac" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="View" Description="N;Residential" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="DesignStyle" Description="DT1;Ranch" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="Quality" Description="Q4" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="Age" Description="55" Amount="-$5,000" />
+    <SALE_PRICE_ADJUSTMENT Type="Condition" Description="C4" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="GrossLivingArea" Description="1946" Amount="-$5,880" />
+    <SALE_PRICE_ADJUSTMENT Type="BasementArea" Description="1800sf0sfwo" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="BasementFinish" Description="0sf" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="FunctionalUtility" Description="Average" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="HeatingCooling" Description="FWA/CAC" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="EnergyEfficient" Description="None" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="CarStorage" Description="2ga2dw" Amount="0" />
+    <SALE_PRICE_ADJUSTMENT Type="PorchDeck" Description="Patio" Amount="0" />
+    <OTHER_FEATURE_ADJUSTMENT Type="Other" TypeOtherDescription="Fireplace" Description="1 Fireplace" Amount="-$1,000" />
+  </ComparableSale>
+  <Reconciliation>
+    <FinalOpinionOfValue>$230,000</FinalOpinionOfValue>
+    <Narrative>Synthetic reconciliation.</Narrative>
+  </Reconciliation>
+</Root>`;
+
+    const normalized = normalizeParsedXml(parseXml(xml), "synthetic-1004-grid.xml");
+    const comp = normalized.comparables[0];
+    expect(comp?.sale_price).toBe(250000);
+    expect(comp?.sales_price_per_gla).toBe(128.47);
+    expect(comp?.sale_date_raw).toBe("s02/25;c01/25");
+    expect(comp?.sale_date).toBe("2025-02");
+    expect(comp?.contract_date).toBe("2025-01");
+    expect(comp?.property_rights).toBe("Fee Simple");
+    expect(comp?.financing_concessions).toBe("Conventional;0");
+    expect(comp?.total_rooms).toBe(11);
+    expect(comp?.bedrooms).toBe(4);
+    expect(comp?.bathrooms).toBe(2.1);
+    expect(comp?.full_bathrooms).toBe(2);
+    expect(comp?.half_bathrooms).toBe(1);
+    expect(comp?.site_size).toBe("1.25 ac");
+    expect(comp?.view).toBe("N;Residential");
+    expect(comp?.location).toBe("N;Res");
+    expect(comp?.design_style).toBe("DT1;Ranch");
+    expect(comp?.quality).toBe("Q4");
+    expect(comp?.condition).toBe("C4");
+    expect(comp?.actual_age).toBe(55);
+    expect(comp?.gla_sqft).toBe(1946);
+    expect(comp?.basement_description).toBe("1800sf0sfwo");
+    expect(comp?.basement_area_sqft).toBe(1800);
+    expect(comp?.basement_finished_sqft).toBe(0);
+    expect(comp?.basement_finish).toBe("0sf");
+    expect(comp?.functional_utility).toBe("Average");
+    expect(comp?.heating_cooling).toBe("FWA/CAC");
+    expect(comp?.energy_efficient).toBeNull();
+    expect(comp?.garage_carport).toBe("2ga2dw");
+    expect(comp?.garage_spaces).toBe(2);
+    expect(comp?.porch_deck).toBe("Patio");
+    expect(comp?.fireplaces).toBe("1 Fireplace");
+    expect(comp?.net_adjustment).toBe(-19580);
+    expect(comp?.net_adjustment_percent).toBe(-7.8);
+    expect(comp?.gross_adjustment_percent).toBe(9.8);
+    expect(normalized.quality_flags.parser_notes).toContain("adjustment_row_filled_comparables_gla_sqft");
+    expect(normalized.quality_flags.parser_notes).toContain("adjustment_row_filled_comparables_garage_carport");
+  });
+
+  it("fills subject condition and quality from subject analysis rows when direct fields are missing", () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <SubjectProperty>
+    <PropertyType>Single family</PropertyType>
+    <City>Exampleville</City>
+    <State>IN</State>
+    <GrossLivingAreaSquareFeet>1778</GrossLivingAreaSquareFeet>
+    <PROPERTY_ANALYSIS Type="QualityAndAppearance" Comment="The dwelling is considered Q4 and C4 from overall quality and appearance." />
+    <PROPERTY_ANALYSIS Type="PropertyCondition" Comment="The subject condition is best represented as C3." />
+  </SubjectProperty>
+  <ValuationMethods>
+    <CostAnalysis>
+      <CostServiceQualityRatingDescription>Q4</CostServiceQualityRatingDescription>
+    </CostAnalysis>
+  </ValuationMethods>
+  <ComparableSale>
+    <CompId>1</CompId>
+    <SalePrice>$100,000</SalePrice>
+    <AdjustedSalePrice>$105,000</AdjustedSalePrice>
+    <SALE_PRICE_ADJUSTMENT Type="GrossLivingArea" Description="1778" Amount="0" />
+  </ComparableSale>
+  <Reconciliation>
+    <FinalOpinionOfValue>$105,000</FinalOpinionOfValue>
+    <Narrative>Synthetic reconciliation.</Narrative>
+  </Reconciliation>
+</Root>`;
+
+    const normalized = normalizeParsedXml(parseXml(xml), "synthetic-subject-analysis.xml");
+    expect(normalized.subject.condition).toBe("C3");
+    expect(normalized.subject.quality).toBe("Q4");
+    expect(normalized.quality_flags.parser_notes).toContain("subject_analysis_filled_subject_condition");
+    expect(normalized.quality_flags.parser_notes).toContain("subject_analysis_filled_subject_quality");
+    expect(normalized.quality_flags.warnings).toContain("subject_condition_analysis_conflict");
+  });
+
   it("tier 1 candidate does not require subject condition quality or comparable GLA", async () => {
     const normalized = validateNormalizedCase(redactCase(normalizeParsedXml(parseXml(tierOneOnlyXml), "tier-one.xml"), true));
     expect(normalized.subject.condition).toBeNull();

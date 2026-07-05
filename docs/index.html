@@ -952,9 +952,47 @@
     }
     .table-wrap {
       overflow-x: auto;
+      scrollbar-gutter: stable;
+      padding-bottom: 4px;
+    }
+    .table-wrap::-webkit-scrollbar {
+      height: 10px;
+    }
+    .table-wrap::-webkit-scrollbar-track {
+      background: #eef3f8;
+      border-radius: 999px;
+    }
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #b8c5d3;
+      border-radius: 999px;
+      border: 2px solid #eef3f8;
     }
     .review-section table {
-      min-width: 760px;
+      min-width: 1360px;
+    }
+    .stacked-cell {
+      display: grid;
+      gap: 3px;
+      min-width: 72px;
+      max-width: 190px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    .stacked-cell strong {
+      font-size: 12px;
+      color: #263244;
+    }
+    .stacked-cell small {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+    .stacked-cell small span {
+      overflow-wrap: anywhere;
     }
     .narrative {
       margin: 0 0 14px;
@@ -2990,7 +3028,8 @@
     }
     .focused-review-layout {
       display: block;
-      max-width: 1180px;
+      width: min(1540px, 100%);
+      max-width: none;
     }
     .focused-review-layout .case-main {
       display: grid;
@@ -3172,6 +3211,218 @@
     }
     .focused-decision-box.yellow {
       border-left-color: #c78105;
+    }
+    .repair-plan-panel {
+      display: grid;
+      gap: 12px;
+      margin: 0 0 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #c78105;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+    .repair-plan-panel.red {
+      border-left-color: var(--red);
+      background: #fffafa;
+    }
+    .repair-plan-panel.yellow {
+      background: #fffdf8;
+    }
+    .repair-plan-panel.ready,
+    .repair-plan-panel.green {
+      border-left-color: var(--green);
+      background: #fbfdfc;
+    }
+    .repair-plan-header {
+      display: grid;
+      gap: 4px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .repair-plan-header span,
+    .repair-kind,
+    .repair-meta dt,
+    .mapping-signal span,
+    .repair-command-details > summary,
+    .raw-problems > summary {
+      color: #7b8796;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .repair-plan-header h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .repair-plan-header p {
+      margin: 0;
+      color: #465466;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .repair-issue-list {
+      display: grid;
+      gap: 10px;
+    }
+    .repair-issue-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 150px;
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #8795a6;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+    .repair-issue-row.ready {
+      border-left-color: var(--green);
+    }
+    .repair-issue-row.attention {
+      border-left-color: #c78105;
+    }
+    .repair-issue-row.missing {
+      border-left-color: var(--red);
+    }
+    .repair-issue-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f7f9fb;
+      color: #465466;
+      font-weight: 950;
+    }
+    .repair-issue-main {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .repair-issue-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .repair-issue-title strong {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+    .repair-kind {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f7f9fb;
+      color: #536173;
+      letter-spacing: 0.02em;
+    }
+    .repair-issue-main p {
+      margin: 0;
+      color: #253044;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .repair-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+    }
+    .repair-meta div {
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+    }
+    .repair-meta dt {
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+    .repair-meta dd {
+      margin: 0;
+      color: #465466;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .mapping-signal {
+      display: grid;
+      gap: 4px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #8795a6;
+      border-radius: 4px;
+      background: #f7f9fb;
+    }
+    .mapping-signal.ready {
+      border-left-color: var(--green);
+      background: #f7fbf9;
+    }
+    .mapping-signal.attention {
+      border-left-color: #c78105;
+      background: #fffdf7;
+    }
+    .mapping-signal.missing {
+      border-left-color: var(--red);
+      background: #fff8f8;
+    }
+    .mapping-signal code {
+      color: #334155;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+    .repair-actions {
+      display: grid;
+      gap: 6px;
+    }
+    .repair-actions button {
+      min-height: 30px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      background: #f7f9fb;
+      border-color: var(--line);
+      color: #334155;
+      font-size: 12px;
+    }
+    .repair-actions button:hover {
+      background: #eef3f8;
+    }
+    .repair-command-details,
+    .raw-problems {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+      overflow: hidden;
+    }
+    .repair-command-details > summary,
+    .raw-problems > summary {
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+    .raw-problems .decision-problems {
+      margin: 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .repair-command-details .command-panel {
+      padding: 0 12px 12px;
     }
     .decision-problems {
       margin: 0 0 12px;
@@ -3384,6 +3635,8 @@
       .plain-review-card,
       .simple-pick,
       .decision-box-heading,
+      .repair-issue-row,
+      .repair-meta,
       .button-meaning-grid,
       .button-meaning-grid.red,
       .case-utility-details {
@@ -3486,7 +3739,7 @@
   <script>
     const sessionOutput = "./demo/review-session";
     const followupCommands = {"apply_review_decisions":"npm run appraisal:apply-review-decisions -- \\\n  --review-packets ./demo/review-packets \\\n  --decisions demo/review-session/review_decisions.csv \\\n  --output ./private/reviewed-appraisal-cases","export_approved":"npm run appraisal:export-approved -- \\\n  --reviewed ./private/reviewed-appraisal-cases \\\n  --output ./private/approved-tier1-training-export \\\n  --eval-ratio 0.2 \\\n  --seed 42"};
-    const staticPayload = {"state":{"generated_at":"2026-07-05T00:00:00.000Z","cases":[{"case_id":"demo_missing_evidence","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"red","label":"Likely reject or needs fix","reasons":["No selected comparables were extracted.","No final value or reconciliation narrative was extracted."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["no_selected_comparables_were_extracted.","no_final_value_or_reconciliation_narrative_was_extracted."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"comps":[],"adjustment_sanity":[],"reconciliation":{"final_opinion_of_value":null,"narrative":null,"caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"missing_fields":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"market":{},"selected_comparables":[],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":null,"indicated_value_low":null,"indicated_value_high":null,"narrative":null},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_adjusted_rows","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"yellow","label":"Needs attention before approval","reasons":["One adjusted sale price row needs human checking."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["one_adjusted_sale_price_row_needs_human_checking."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","sale_date":null,"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-02-15","warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-01-24","warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"badge":"Filled missing"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":222000,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["local_mapping_conflict_comparables_adjusted_sale_price"],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","sale_date":null,"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-02-15","warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-01-24","warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","sale_date":null,"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-02-15","warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-01-24","warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":222000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_ready_case","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"green","label":"Likely approvable","reasons":["Candidate checks passed."]},"tier":{"tier1_status":"candidate","tier1_reasons":["candidate_checks_passed."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-03-01","warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-03-15","warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":307000,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":[],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-03-01","warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-03-15","warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","sale_date":"2026-03-01","warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","sale_date":"2026-03-15","warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":307000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false}],"progress":{"total":3,"reviewed":0,"approved":0,"needs_revision":0,"rejected":0,"skipped":0,"unreviewed":3,"green":1,"yellow":1,"red":1,"adjusted_price_rows_needing_attention":1},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0}},"workbench":{"generated_at":"2026-07-05T00:00:00.000Z","stages":[{"id":"overview","label":"Overview","status":"ready","detail":"Static demo loaded."},{"id":"intake","label":"Import","status":"ready","detail":"Synthetic cases only."},{"id":"mapping","label":"Mapping","status":"ready","detail":"Demo mappings verified."},{"id":"review","label":"Tier Review","status":"attention","detail":"Try the approval worksheet."},{"id":"repairs","label":"Repairs","status":"attention","detail":"Demo red/yellow cases available."},{"id":"export","label":"Export","status":"blocked","detail":"Local private export only."},{"id":"audit","label":"Audit","status":"ready","detail":"No private values in static demo."}],"intake":{"xml_files_found":3,"parsed":3,"parse_failures":0,"inspection_grid_rows":6,"safe_value_profile_rows":12},"mapping":{"verified_count":3,"verified_mappings":[{"field":"subject.condition","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Condition].Subject","notes":"Synthetic demo mapping"},{"field":"subject.quality","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Quality Rating].Subject","notes":"Synthetic demo mapping"},{"field":"comparables.adjusted_sale_price","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Adjusted Sale Price]","notes":"Synthetic demo mapping"}],"review_targets":[],"validation":{"parsed":3,"applications":[{"field":"comparables.adjusted_sale_price"}],"target_coverage":[{"field":"subject.condition","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"subject.quality","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"comparables.adjusted_sale_price","before_pct":67,"after_pct":100,"delta_pct":33}]}},"repairs":{"red_cases":1,"needs_revision_cases":0,"adjusted_attention_rows":1,"parser_warning_cases":2,"top_blockers":[{"blocker":"missing selected comparables","count":1},{"blocker":"adjusted sale price needs review","count":1}]},"export":{"train_lines":0,"eval_lines":0,"all_lines":0},"audit":{"privacy_total":0,"final_value_leakage_cases":0,"raw_xml_included":false,"privacy_sources":[{"name":"Static demo data","total":0}],"conflict_summary":{"adjusted_rows_needing_attention":1}},"pipeline":{"redaction_enabled":true,"adjusted_price_conflict_stats":{"policy":"static_demo"},"warnings_by_type":[{"warning":"synthetic_demo_warning","count":1}]},"review":{"decision_file":"Browser localStorage in static demo"},"paths":{"input_folder":"Synthetic demo data","training_output":"Local private output only","review_batch":"Local private review batch only","session_output":"Browser localStorage in static demo","mapping_file":"Synthetic demo mappings","inspection_output":"Synthetic demo inspection","review_packets":"Synthetic demo packets","approved_export":"Local private export only"}}};
+    const staticPayload = {"state":{"generated_at":"2026-07-05T00:00:00.000Z","cases":[{"case_id":"demo_missing_evidence","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"red","label":"Likely reject or needs fix","reasons":["No selected comparables were extracted.","No final value or reconciliation narrative was extracted."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["no_selected_comparables_were_extracted.","no_final_value_or_reconciliation_narrative_was_extracted."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"comps":[],"adjustment_sanity":[],"reconciliation":{"final_opinion_of_value":null,"narrative":null,"caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"missing_fields":["missing_subject_condition","missing_subject_quality","missing_subject_gla","missing_comparables","missing_final_opinion_of_value","reconciliation_narrative_missing"],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":null,"bedrooms":null,"bathrooms":null,"condition":null,"quality":null},"market":{},"selected_comparables":[],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":null,"indicated_value_low":null,"indicated_value_high":null,"narrative":null},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_adjusted_rows","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"yellow","label":"Needs attention before approval","reasons":["One adjusted sale price row needs human checking."]},"tier":{"tier1_status":"needs_review","tier1_reasons":["one_adjusted_sale_price_row_needs_human_checking."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"net_adjustment":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"badge":"Filled missing"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"net_adjustment":-19580,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"net_adjustment":22152,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":222000,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":["local_mapping_conflict_comparables_adjusted_sale_price"],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Lyonstown","state":"IN","gla_sqft":1778,"bedrooms":3,"bathrooms":2,"condition":"C4","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":185000,"sales_price_per_gla":101.09,"net_adjustment":null,"net_adjustment_percent":null,"gross_adjustment":null,"gross_adjustment_percent":null,"expected_adjusted_sale_price":null,"adjusted_sale_price":230420,"adjusted_price_source":"local-filled","adjusted_price_badge":"Filled missing","needs_manual_attention":true,"condition":"C4","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":null,"sale_date_raw":null,"contract_date":null,"actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Needs human check"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":250000,"sales_price_per_gla":130.89,"net_adjustment":-19580,"net_adjustment_percent":-7.8,"gross_adjustment":23080,"gross_adjustment_percent":9.2,"expected_adjusted_sale_price":230420,"adjusted_sale_price":230420,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-02-15","sale_date_raw":"2026-02-15","contract_date":"2026-02","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_3","comp_index":3,"sale_price":199000,"sales_price_per_gla":100,"net_adjustment":22152,"net_adjustment_percent":11.1,"gross_adjustment":25652,"gross_adjustment_percent":12.9,"expected_adjusted_sale_price":221152,"adjusted_sale_price":221152,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1990,"total_rooms":10,"bedrooms":4,"bathrooms":2.1,"full_bathrooms":2,"half_bathrooms":1,"site_size":"0.55 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":null,"sale_date":"2026-01-24","sale_date_raw":"2026-01-24","contract_date":"2026-01","actual_age":36,"year_built":1988,"design_style":"DT1;Ranch","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Patio","fireplaces":null,"other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":222000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Most weight is placed on the selected sales comparison indicators. The sample narrative is synthetic and contains no private appraisal data."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false},{"case_id":"demo_ready_case","source_file_id":"demo_synthetic_source","decision_status":"unreviewed","decision":{"status":"unreviewed","reviewer":null,"reviewed_at":null,"notes":null},"recommendation":{"level":"green","label":"Likely approvable","reasons":["Candidate checks passed."]},"tier":{"tier1_status":"candidate","tier1_reasons":["candidate_checks_passed."],"tier2_status":"needs_review","tier2_reasons":["demo_selected_comps_only"],"tier3_status":"needs_review","tier3_reasons":["demo_candidate_pool_unavailable"]},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"comps":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_sanity":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"net_adjustment":5000,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"net_adjustment":-8000,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"badge":"Pass"}],"reconciliation":{"final_opinion_of_value":307000,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value.","caveats":["Synthetic GitHub Pages demo only.","Use the local private review UI for real appraisal review decisions."]},"warnings":[],"missing_fields":[],"training_example":{"input_case":{"metadata":{"report_type":"Synthetic 1004","form_type":"Demo","effective_date":"2026-07-05","inspection_date":null},"subject":{"property_type":"Single family","address_redacted":"[REDACTED STREET]","city":"Exampleville","state":"IN","gla_sqft":1900,"bedrooms":3,"bathrooms":2,"condition":"C3","quality":"Q4"},"market":{},"selected_comparables":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"available_context":{"note":"Synthetic static demo case."}},"expert_answer":{"selected_comp_summary":[{"comp_id":"demo_comp_1","comp_index":1,"sale_price":300000,"sales_price_per_gla":163.93,"net_adjustment":5000,"net_adjustment_percent":1.7,"gross_adjustment":8500,"gross_adjustment_percent":2.8,"expected_adjusted_sale_price":305000,"adjusted_sale_price":305000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C3","quality":"Q4","gla_sqft":1830,"total_rooms":8,"bedrooms":3,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.42 ac","view":"N;Residential","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":"None","financing_concessions":null,"sale_date":"2026-03-01","sale_date_raw":"2026-03-01","contract_date":"2026-03","actual_age":24,"year_built":2000,"design_style":"DT2;Traditional","basement_area_sqft":0,"basement_finished_sqft":null,"basement_description":"0sf","basement_finish":"0sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":null,"other_features":[],"warning_badge":"Pass"},{"comp_id":"demo_comp_2","comp_index":2,"sale_price":318000,"sales_price_per_gla":166.49,"net_adjustment":-8000,"net_adjustment_percent":-2.5,"gross_adjustment":11500,"gross_adjustment_percent":3.6,"expected_adjusted_sale_price":310000,"adjusted_sale_price":310000,"adjusted_price_source":"built-in","adjusted_price_badge":"Pass","needs_manual_attention":false,"condition":"C4","quality":"Q4","gla_sqft":1910,"total_rooms":9,"bedrooms":4,"bathrooms":2,"full_bathrooms":2,"half_bathrooms":null,"site_size":"0.55 ac","view":"N;Woods","location":"N;Suburban","property_rights":"Fee simple","sales_concessions":null,"financing_concessions":"Conventional;0","sale_date":"2026-03-15","sale_date_raw":"2026-03-15","contract_date":"2026-03","actual_age":30,"year_built":1994,"design_style":"DT2;Traditional","basement_area_sqft":900,"basement_finished_sqft":450,"basement_description":"900sf450sfwo","basement_finish":"450sf","functional_utility":"Average","heating_cooling":"FWA/CAC","energy_efficient":null,"garage_carport":"2ga2dw","garage_spaces":2,"carport_spaces":null,"porch_deck":"Porch","fireplaces":"1 Fireplace","other_features":[],"warning_badge":"Pass"}],"adjustment_summary":[],"reconciliation":{"final_opinion_of_value":307000,"indicated_value_low":null,"indicated_value_high":null,"narrative":"Synthetic grid fixture reconciles selected fake comparable indicators into a supported final value."},"caveats":["Synthetic demo answer."]}},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0},"final_value_leakage":false}],"progress":{"total":3,"reviewed":0,"approved":0,"needs_revision":0,"rejected":0,"skipped":0,"unreviewed":3,"green":1,"yellow":1,"red":1,"adjusted_price_rows_needing_attention":1},"privacy":{"email":0,"phone":0,"full_street_address":0,"private_name_label":0,"license_or_private_id":0}},"workbench":{"generated_at":"2026-07-05T00:00:00.000Z","stages":[{"id":"overview","label":"Overview","status":"ready","detail":"Static demo loaded."},{"id":"intake","label":"Import","status":"ready","detail":"Synthetic cases only."},{"id":"mapping","label":"Mapping","status":"ready","detail":"Demo mappings verified."},{"id":"review","label":"Tier Review","status":"attention","detail":"Try the approval worksheet."},{"id":"repairs","label":"Repairs","status":"attention","detail":"Demo red/yellow cases available."},{"id":"export","label":"Export","status":"blocked","detail":"Local private export only."},{"id":"audit","label":"Audit","status":"ready","detail":"No private values in static demo."}],"intake":{"xml_files_found":3,"parsed":3,"parse_failures":0,"inspection_grid_rows":6,"safe_value_profile_rows":12},"mapping":{"verified_count":3,"verified_mappings":[{"field":"subject.condition","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Condition].Subject","notes":"Synthetic demo mapping"},{"field":"subject.quality","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Quality Rating].Subject","notes":"Synthetic demo mapping"},{"field":"comparables.adjusted_sale_price","strategy":"grid_row","confidence":"manual_verified","path":"SalesComparisonGrid.Row[Adjusted Sale Price]","notes":"Synthetic demo mapping"}],"review_targets":[],"validation":{"parsed":3,"applications":[{"field":"comparables.adjusted_sale_price"}],"target_coverage":[{"field":"subject.condition","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"subject.quality","before_pct":0,"after_pct":67,"delta_pct":67},{"field":"comparables.adjusted_sale_price","before_pct":67,"after_pct":100,"delta_pct":33}]}},"repairs":{"red_cases":1,"needs_revision_cases":0,"adjusted_attention_rows":1,"parser_warning_cases":2,"top_blockers":[{"blocker":"missing selected comparables","count":1},{"blocker":"adjusted sale price needs review","count":1}]},"export":{"train_lines":0,"eval_lines":0,"all_lines":0},"audit":{"privacy_total":0,"final_value_leakage_cases":0,"raw_xml_included":false,"privacy_sources":[{"name":"Static demo data","total":0}],"conflict_summary":{"adjusted_rows_needing_attention":1}},"pipeline":{"redaction_enabled":true,"adjusted_price_conflict_stats":{"policy":"static_demo"},"warnings_by_type":[{"warning":"synthetic_demo_warning","count":1}]},"review":{"decision_file":"Browser localStorage in static demo"},"paths":{"input_folder":"Synthetic demo data","training_output":"Local private output only","review_batch":"Local private review batch only","session_output":"Browser localStorage in static demo","mapping_file":"Synthetic demo mappings","inspection_output":"Synthetic demo inspection","review_packets":"Synthetic demo packets","approved_export":"Local private export only"}}};
     const isStaticDemo = Boolean(staticPayload);
     const staticDecisionStorageKey = 'appraisalStaticDemoDecisions';
     const defaultReviewer = "Demo Reviewer";
@@ -3503,6 +3756,46 @@
     const humanize = value => fmt(value).replace(/_/g, ' ');
     const humanizeList = values => Array.isArray(values) && values.length ? values.map(humanize).join('; ') : 'None';
     const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmtNumber = value => typeof value === 'number' ? value.toLocaleString('en-US') : 'Missing';
+    const fmtSqft = value => typeof value === 'number' ? `${value.toLocaleString('en-US')} sf` : 'Missing';
+    const present = value => value != null && value !== '' && value !== 'Missing';
+    const detailJoin = values => values.filter(present).join(' · ') || 'Missing';
+    const stackedCell = (primary, details = []) => {
+      const cleanPrimary = fmt(primary);
+      const detailItems = details.filter(present).map(detail => `<span>${escape(detail)}</span>`).join('');
+      return `<div class="stacked-cell"><strong>${escape(cleanPrimary)}</strong>${detailItems ? `<small>${detailItems}</small>` : ''}</div>`;
+    };
+    const compBathText = comp => {
+      if (typeof comp.full_bathrooms === 'number' || typeof comp.half_bathrooms === 'number') {
+        return [typeof comp.full_bathrooms === 'number' ? `${comp.full_bathrooms} full` : null, typeof comp.half_bathrooms === 'number' ? `${comp.half_bathrooms} half` : null].filter(Boolean).join(' / ');
+      }
+      return fmt(comp.bathrooms);
+    };
+    const compRoomText = comp => detailJoin([
+      typeof comp.total_rooms === 'number' ? `${comp.total_rooms} rms` : null,
+      typeof comp.bedrooms === 'number' ? `${comp.bedrooms} br` : null,
+      compBathText(comp)
+    ]);
+    const compSiteViewText = comp => detailJoin([comp.site_size, comp.view, comp.location]);
+    const compAgeDesignText = comp => detailJoin([
+      typeof comp.actual_age === 'number' ? `${comp.actual_age} yrs` : null,
+      typeof comp.year_built === 'number' ? `built ${comp.year_built}` : null,
+      comp.design_style
+    ]);
+    const compGarageBasementText = comp => detailJoin([
+      comp.garage_carport,
+      typeof comp.garage_spaces === 'number' ? `${comp.garage_spaces} gar` : null,
+      typeof comp.carport_spaces === 'number' ? `${comp.carport_spaces} carport` : null,
+      comp.basement_description || fmtSqft(comp.basement_area_sqft),
+      comp.basement_finish,
+      comp.porch_deck,
+      comp.fireplaces
+    ]);
+    const compDateText = comp => detailJoin([
+      comp.sale_date,
+      comp.contract_date ? `contract ${comp.contract_date}` : null,
+      comp.sale_date_raw && comp.sale_date_raw !== comp.sale_date ? comp.sale_date_raw : null
+    ]);
 
     async function load() {
       if (isStaticDemo) {
@@ -3939,9 +4232,9 @@
 
     function approvalDecisionContext(item, items) {
       if (item.recommendation.level === 'red') {
-        return 'This case is not training-ready. Use Needs Fix if a parser or mapping repair could recover it. Use Reject if this source should stay out of training data.';
+        return 'This case is not training-ready. Use the repair rows to see what is missing. Send it to the repair queue if mapping or parser work could recover it; reject only if this source should stay out of training data.';
       }
-      return `Approve is locked until all ${items.length} things are checked. If anything is not acceptable, write a note and use Needs Fix or Reject.`;
+      return `Approve is locked until all ${items.length} things are checked. If any repair row still needs work, send it to the repair queue instead of approving.`;
     }
 
     function approvalTitleKey(item) {
@@ -4575,22 +4868,22 @@
       if (item.recommendation.level === 'red') {
         return {
           title: 'This one is not ready.',
-          body: 'It is missing important data. Click the big Needs Fix button unless you are sure this should never be used.',
+          body: 'It is missing appraisal evidence. Use the fix worksheet below to see exactly what is broken and what kind of repair it needs.',
           steps: [
-            'Use the big Needs Fix button.',
-            'Only use Reject if this should never be used.',
-            'You do not have to write a note; the button fills one in.'
+            'Read each row in What needs fixing.',
+            'Send it to the repair queue if mapping or parser work could recover it.',
+            'Reject only if this source should never be used.'
           ]
         };
       }
       if (item.recommendation.level === 'yellow') {
         return {
           title: 'This one might be usable.',
-          body: `If you are not completely sure, click the big Needs Fix button. Only approve after you check all ${approvals.length} thing${approvals.length === 1 ? '' : 's'} below.`,
+          body: `Use the fix worksheet first. Approve only after all ${approvals.length} thing${approvals.length === 1 ? '' : 's'} are checked or the missing items are truly acceptable.`,
           steps: [
-            'When unsure, click Needs Fix.',
-            'Approve only after every thing is checked.',
-            'Reject only if this should never be used.'
+            'Check each listed issue.',
+            'Approve only when the evidence is acceptable.',
+            'Use repair queue when a mapping or parser fix is needed.'
           ]
         };
       }
@@ -4625,6 +4918,264 @@
             <small class="muted">Case ${escape(index + 1)} of ${escape(visibleCount)}</small>
           </div>
         </section>
+      `;
+    }
+
+    function repairDefinitions() {
+      return {
+        missing_subject_condition: {
+          key: 'subject.condition',
+          title: 'Subject condition rating',
+          problem: 'The subject C-rating is missing.',
+          fixType: 'Map field',
+          target: 'subject.condition',
+          area: '1004 subject improvement and sales comparison grid',
+          why: 'Condition affects comparable selection and adjustment support. Use C1 through C5 when the report provides a UAD condition rating.',
+          next: 'Confirm the XML path that carries the subject condition rating, then add or verify that mapping.'
+        },
+        missing_subject_quality: {
+          key: 'subject.quality',
+          title: 'Subject quality rating',
+          problem: 'The subject Q-rating is missing.',
+          fixType: 'Map field',
+          target: 'subject.quality',
+          area: '1004 subject improvement and sales comparison grid',
+          why: 'Quality affects comparable selection and adjustment support. Use Q1 through Q5 when the report provides a UAD quality rating.',
+          next: 'Confirm the XML path that carries the subject quality rating, then add or verify that mapping.'
+        },
+        missing_subject_gla: {
+          key: 'subject.gla_sqft',
+          title: 'Subject gross living area',
+          problem: 'Subject GLA is missing.',
+          fixType: 'Map field',
+          target: 'subject.gla_sqft',
+          area: '1004 improvements section and sales comparison grid',
+          why: 'GLA is a core physical characteristic and often a major sales comparison adjustment driver.',
+          next: 'Map the subject gross living area field, or document why this case cannot be used.'
+        },
+        missing_comparable_gla: {
+          key: 'comparables.gla_sqft',
+          title: 'Comparable gross living area',
+          problem: 'Comparable GLA is missing.',
+          fixType: 'Map field',
+          target: 'comparables.gla_sqft',
+          area: '1004 sales comparison grid',
+          why: 'Comparable GLA is needed to support size comparison and GLA adjustments.',
+          next: 'Verify the sales comparison grid row that carries comparable GLA and add the mapping.'
+        },
+        missing_comparables: {
+          key: 'selected_comparables',
+          title: 'Selected comparable sales',
+          problem: 'No selected comparable sales were extracted.',
+          fixType: 'Parser/grid extraction',
+          target: 'selected_comparables',
+          area: '1004 sales comparison approach grid',
+          why: 'A training example cannot teach selected comp analysis without the comparable sale rows.',
+          next: 'Inspect the sales comparison grid shape and repair comparable row extraction before approval.'
+        },
+        comparables: {
+          key: 'selected_comparables',
+          title: 'Selected comparable sales',
+          problem: 'Comparable sale data is missing or incomplete.',
+          fixType: 'Parser/grid extraction',
+          target: 'selected_comparables',
+          area: '1004 sales comparison approach grid',
+          why: 'The selected comp set is the evidence base for the sales comparison indication.',
+          next: 'Inspect comparable row extraction and map missing sales comparison fields.'
+        },
+        missing_final_opinion_of_value: {
+          key: 'reconciliation.final_opinion_of_value',
+          title: 'Final opinion of value',
+          problem: 'The final opinion of value is missing.',
+          fixType: 'Map field',
+          target: 'reconciliation.final_opinion_of_value',
+          area: '1004 reconciliation section',
+          why: 'The final value is the conclusion the model is supposed to learn to support.',
+          next: 'Map the final opinion/concluded market value field, or keep the case out of approved training data.'
+        },
+        reconciliation_narrative_missing: {
+          key: 'reconciliation.narrative',
+          title: 'Reconciliation narrative',
+          problem: 'The reconciliation narrative is missing.',
+          fixType: 'Map field',
+          target: 'reconciliation.narrative',
+          area: '1004 reconciliation section and addenda',
+          why: 'The narrative explains how the value indications were reconciled and why the conclusion is supported.',
+          next: 'Map the reconciliation/commentary text or document that this source cannot support the training answer.'
+        },
+        parse_path_low_confidence: {
+          key: 'parser.confidence',
+          title: 'Parser confidence',
+          problem: 'The parser used a low-confidence path.',
+          fixType: 'Parser review',
+          target: 'parser.path_selection',
+          area: 'XML path discovery and parser normalization',
+          why: 'Low-confidence paths can put the right-looking value in the wrong appraisal field.',
+          next: 'Open evidence, compare against the form/PDF, then tighten aliases or parser path selection.'
+        }
+      };
+    }
+
+    function repairDefinitionForMissing(field) {
+      const definitions = repairDefinitions();
+      if (definitions[field]) return definitions[field];
+      const normalized = String(field || '').toLowerCase();
+      if (normalized.includes('subject_condition')) return definitions.missing_subject_condition;
+      if (normalized.includes('subject_quality')) return definitions.missing_subject_quality;
+      if (normalized.includes('subject_gla')) return definitions.missing_subject_gla;
+      if (normalized.includes('comparable_gla')) return definitions.missing_comparable_gla;
+      if (normalized.includes('comparables')) return definitions.comparables;
+      if (normalized.includes('final_opinion') || normalized.includes('final_value')) return definitions.missing_final_opinion_of_value;
+      if (normalized.includes('narrative')) return definitions.reconciliation_narrative_missing;
+      return {
+        key: normalized || 'unknown',
+        title: humanize(field),
+        problem: `${humanize(field)} is missing or flagged.`,
+        fixType: 'Mapping or parser review',
+        target: normalized.replace(/^missing_/, '').replaceAll('_', '.'),
+        area: 'XML field discovery',
+        why: 'The case should not be approved until this missing item is either fixed or documented as acceptable.',
+        next: 'Use mapping review or source evidence to decide whether this should be mapped, ignored, or rejected.'
+      };
+    }
+
+    function repairPlanItems(item) {
+      const items = [];
+      const seen = new Set();
+      const add = definition => {
+        if (!definition || seen.has(definition.key)) return;
+        seen.add(definition.key);
+        items.push(definition);
+      };
+      const definitions = repairDefinitions();
+      if (item.comps.length === 0) add(definitions.missing_comparables);
+      if (item.reconciliation.final_opinion_of_value == null) add(definitions.missing_final_opinion_of_value);
+      if (!item.reconciliation.narrative) add(definitions.reconciliation_narrative_missing);
+      for (const field of item.missing_fields || []) add(repairDefinitionForMissing(field));
+      for (const warning of item.warnings || []) {
+        if (warning === 'redacted_postal_code' || warning === 'redacted_street_address') continue;
+        add(repairDefinitionForMissing(warning));
+      }
+      const adjustedRows = item.comps.filter(comp => comp.needs_manual_attention).length;
+      if (adjustedRows > 0) {
+        add({
+          key: 'comparables.adjusted_sale_price',
+          title: 'Adjusted sale price rows',
+          problem: `${adjustedRows} adjusted sale price row${adjustedRows === 1 ? '' : 's'} need human checking.`,
+          fixType: 'Formula/value check',
+          target: 'comparables.adjusted_sale_price',
+          area: '1004 sales comparison adjustment grid',
+          why: 'Adjusted sale price should reconcile to sale price plus net adjustments, or the source conflict must be explained.',
+          next: 'Check the adjustment sanity rows and confirm the extracted adjusted sale price is correct.'
+        });
+      }
+      return items;
+    }
+
+    function mappingSignal(target) {
+      const mapping = workbench?.mapping || {};
+      const verified = (mapping.verified_mappings || []).filter(row => row.field === target);
+      if (verified.length) {
+        return {
+          tone: 'ready',
+          label: 'Verified mapping exists',
+          detail: verified[0].path || 'Local mapping file',
+          path: verified[0].path || ''
+        };
+      }
+      const application = (mapping.validation?.applications || []).find(row => row.field === target);
+      if (application) {
+        return {
+          tone: 'ready',
+          label: `Mapping is applying to ${application.value_count ?? 0} value${application.value_count === 1 ? '' : 's'}`,
+          detail: application.path || 'Validation output',
+          path: application.path || ''
+        };
+      }
+      const packet = (mapping.review_targets || []).find(row => row.target === target);
+      if (packet) {
+        const top = packet.top_candidates?.[0] || null;
+        return {
+          tone: top?.recommendation === 'likely_accept' ? 'ready' : 'attention',
+          label: `${packet.candidates} mapping candidate${packet.candidates === 1 ? '' : 's'} available`,
+          detail: top ? `${top.recommendation} · score ${top.score} · ${top.dominant_shape || 'shape unknown'}` : 'No top candidate loaded',
+          path: top?.path || ''
+        };
+      }
+      return {
+        tone: 'missing',
+        label: target.includes('selected_comparables') || target.includes('parser')
+          ? 'Parser/grid repair needed'
+          : 'No mapping candidate loaded yet',
+        detail: 'Refresh inspection/mapping packets or compare with the source report.',
+        path: ''
+      };
+    }
+
+    function repairPlanPanel(item, issues) {
+      const repairs = repairPlanItems(item);
+      if (!repairs.length) {
+        return `
+          <div class="repair-plan-panel ready">
+            <div class="repair-plan-header">
+              <span>What needs fixing</span>
+              <h2>No repair blockers found</h2>
+              <p>Use the approval checklist below as a final spot-check before training export.</p>
+            </div>
+          </div>
+        `;
+      }
+      return `
+        <div class="repair-plan-panel ${escape(item.recommendation.level)}">
+          <div class="repair-plan-header">
+            <span>What needs fixing</span>
+            <h2>${escape(repairs.length)} issue${repairs.length === 1 ? '' : 's'} to resolve before approval</h2>
+            <p>Each row is a separate repair question. Needs Fix sends this case to the repair queue; it is not approval.</p>
+          </div>
+          <div class="repair-issue-list">
+            ${repairs.map((repair, repairIndex) => repairIssueRow(repair, repairIndex)).join('')}
+          </div>
+          <details class="raw-problems">
+            <summary>Show raw parser warnings</summary>
+            ${decisionProblems(issues)}
+          </details>
+          <details class="repair-command-details">
+            <summary>Show commands to refresh mapping work</summary>
+            ${commandPanel(inspectCommand() + '\n\n' + mappingCommands())}
+          </details>
+        </div>
+      `;
+    }
+
+    function repairIssueRow(repair, repairIndex) {
+      const signal = mappingSignal(repair.target || '');
+      const note = `Needs Fix: ${repair.title} - ${repair.next}`;
+      return `
+        <article class="repair-issue-row ${escape(signal.tone)}">
+          <div class="repair-issue-number">${escape(repairIndex + 1)}</div>
+          <div class="repair-issue-main">
+            <div class="repair-issue-title">
+              <strong>${escape(repair.title)}</strong>
+              <span class="repair-kind">${escape(repair.fixType)}</span>
+            </div>
+            <p>${escape(repair.problem)}</p>
+            <dl class="repair-meta">
+              <div><dt>Why it matters</dt><dd>${escape(repair.why)}</dd></div>
+              <div><dt>Where to fix</dt><dd>${escape(repair.area)}</dd></div>
+              <div><dt>Target field</dt><dd>${escape(repair.target)}</dd></div>
+            </dl>
+            <div class="mapping-signal ${escape(signal.tone)}">
+              <span>${escape(signal.label)}</span>
+              <code>${escape(signal.path || signal.detail)}</code>
+            </div>
+          </div>
+          <div class="repair-actions">
+            <button type="button" onclick="openEvidenceDrawer()">Evidence</button>
+            <button type="button" onclick="setView('mapping')">Mapping</button>
+            <button type="button" onclick="setView('repairs')">Repairs</button>
+            <button type="button" data-note-template="${escape(note)}" onclick="appendNoteTemplate(this.dataset.noteTemplate || '')">Add note</button>
+          </div>
+        </article>
       `;
     }
 
@@ -4668,7 +5219,7 @@
       return `
         <div class="decision-helper">
           <span>Note rule</span>
-          <p>${isRed ? 'You can leave the note box alone. The big Needs Fix button will add a basic note for you.' : 'If you are unsure, click the big Needs Fix button. It will add a basic note for you.'}</p>
+          <p>${isRed ? 'The repair queue button will add a basic note if you leave the box empty.' : 'If you are unsure, send it to the repair queue. The button will add a basic note if you leave the box empty.'}</p>
         </div>
       `;
     }
@@ -4688,11 +5239,11 @@
       }
       return {
         tone: level === 'red' ? 'red' : 'yellow',
-        label: 'If you are not sure',
-        title: 'Click Needs Fix.',
-        body: 'This does not delete anything. It just saves the case for repair or another look later.',
+        label: 'Primary action',
+        title: 'Send this case to repair.',
+        body: 'This does not approve or delete the case. It saves the case so the mapping/parser issues above can be fixed later.',
         buttonClass: 'yellow',
-        buttonText: 'Click this: Needs Fix - repair later',
+        buttonText: 'Send to repair queue',
         status: 'needs_revision'
       };
     }
@@ -4721,7 +5272,7 @@
           <summary>Other choices</summary>
           <div class="other-choice-actions">
             ${approveChoice}
-            <button class="yellow" onclick="quickDecision('needs_revision')">Needs Fix - repair later</button>
+            <button class="yellow" onclick="quickDecision('needs_revision')">Needs Fix - repair queue</button>
             <button class="red" onclick="quickDecision('rejected')">Reject - do not use</button>
             <button onclick="quickDecision('skipped')">Skip - decide later</button>
           </div>
@@ -4769,15 +5320,15 @@
           <div class="decision-box-heading">
             <div>
               <span>Decision</span>
-              <h2>What should I click?</h2>
+              <h2>Repair, approve, or reject?</h2>
             </div>
             <p>${escape(approvalDecisionContext(item, approvals))}</p>
           </div>
+          ${repairPlanPanel(item, issues)}
           ${simplePickPanel(item)}
-          ${decisionProblems(issues)}
           ${isRed ? '' : approvalStatementSummary(item.case_id, approvals)}
           ${decisionHelper(isRed)}
-          <textarea id="notes" placeholder="${isRed ? 'Optional: the big Needs Fix button will add a note for you.' : 'Optional: the big Needs Fix button will add a note for you.'}">${escape(item.decision.notes || '')}</textarea>
+          <textarea id="notes" placeholder="Optional. Use Add note on a repair row, or leave blank and the repair queue button will add a basic note.">${escape(item.decision.notes || '')}</textarea>
           ${otherChoices(item)}
           ${isRed ? approvalOverridePanel(item.case_id, approvals) : ''}
           <p id="saveMsg" class="save-msg"></p>
@@ -4828,19 +5379,30 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Comp</th><th>Sale price</th><th>Net adj.</th><th>Adjusted</th><th>Source</th><th>Condition</th><th>Quality</th><th>Sale date</th><th>Check</th></tr></thead>
+              <thead><tr><th>Comp</th><th>Price</th><th>Net adj.</th><th>Indicated</th><th>C / Q</th><th>GLA</th><th>Rooms</th><th>Site / view</th><th>Age / design</th><th>Garage / basement</th><th>Sale timing</th><th>Check</th></tr></thead>
               <tbody>${displayedComps.length ? displayedComps.map(comp => `
                 <tr>
                   <td>${escape(comp.comp_index)}</td>
-                  <td>${escape(fmtMoney(comp.sale_price))}</td>
-                  <td>${escape(fmtMoney(comp.net_adjustment))}</td>
-                  <td>${escape(fmtMoney(comp.adjusted_sale_price))}</td>
-                  <td>${escape(comp.adjusted_price_source)}</td>
-                  <td>${escape(fmt(comp.condition))}</td>
-                  <td>${escape(fmt(comp.quality))}</td>
-                  <td>${escape(fmt(comp.sale_date))}</td>
+                  <td>${stackedCell(fmtMoney(comp.sale_price), [
+                    typeof comp.sales_price_per_gla === 'number' ? `${fmtMoney(comp.sales_price_per_gla)}/GLA` : null,
+                    comp.property_rights,
+                    comp.financing_concessions,
+                    comp.sales_concessions
+                  ])}</td>
+                  <td>${stackedCell(fmtMoney(comp.net_adjustment), [
+                    typeof comp.net_adjustment_percent === 'number' ? `${comp.net_adjustment_percent}% net` : null,
+                    typeof comp.gross_adjustment_percent === 'number' ? `${comp.gross_adjustment_percent}% gross` : null
+                  ])}</td>
+                  <td>${stackedCell(fmtMoney(comp.adjusted_sale_price), [humanize(comp.adjusted_price_source)])}</td>
+                  <td>${stackedCell(detailJoin([comp.condition, comp.quality]), [])}</td>
+                  <td>${stackedCell(fmtSqft(comp.gla_sqft), [])}</td>
+                  <td>${stackedCell(compRoomText(comp), [])}</td>
+                  <td>${stackedCell(compSiteViewText(comp), [])}</td>
+                  <td>${stackedCell(compAgeDesignText(comp), [])}</td>
+                  <td>${stackedCell(compGarageBasementText(comp), [])}</td>
+                  <td>${stackedCell(compDateText(comp), [])}</td>
                   <td>${badge(comp.adjusted_price_badge)}</td>
-                </tr>`).join('') : `<tr><td class="empty-table" colspan="9">${filters.attentionOnlyRows ? 'No comparable rows currently need manual attention.' : 'No selected comparables were extracted for this case.'}</td></tr>`}
+                </tr>`).join('') : `<tr><td class="empty-table" colspan="12">${filters.attentionOnlyRows ? 'No comparable rows currently need manual attention.' : 'No selected comparables were extracted for this case.'}</td></tr>`}
               </tbody>
             </table>
           </div>
@@ -4977,6 +5539,13 @@
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function openEvidenceDrawer() {
+      const drawer = document.querySelector('.evidence-drawer');
+      if (!drawer) return;
+      drawer.open = true;
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function setAttentionOnlyRows(value) {
       filters.attentionOnlyRows = value;
       renderCase();
@@ -5106,9 +5675,11 @@
     function defaultDecisionNote(item, status) {
       if (!item) return '';
       if (status === 'needs_revision') {
-        if (item.recommendation.level === 'red') return 'Missing important data; needs repair.';
-        if (item.recommendation.level === 'yellow') return 'Needs another look or repair before approval.';
-        return 'Needs review or repair before approval.';
+        const repairs = repairPlanItems(item).slice(0, 4).map(repair => repair.title);
+        const suffix = repairs.length ? `: ${repairs.join('; ')}` : '.';
+        if (item.recommendation.level === 'red') return `Send to repair queue. Blocking appraisal evidence is missing${suffix}`;
+        if (item.recommendation.level === 'yellow') return `Send to repair queue. Review or mapping repair needed before approval${suffix}`;
+        return `Send to repair queue. Needs review or repair before approval${suffix}`;
       }
       if (status === 'rejected') return 'Do not use this case for training.';
       return '';

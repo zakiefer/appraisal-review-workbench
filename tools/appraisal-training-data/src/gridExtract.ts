@@ -13,18 +13,43 @@ import {
 export interface GridExtractedComparable {
   comp_id?: string;
   sale_price?: string | null;
+  sales_price_per_gla?: string | null;
   sale_date?: string | null;
+  sale_date_raw?: string | null;
+  contract_date?: string | null;
+  property_rights?: string | null;
+  sales_concessions?: string | null;
+  financing_concessions?: string | null;
   gla_sqft?: string | null;
+  total_rooms?: string | null;
   bedrooms?: string | null;
   bathrooms?: string | null;
+  full_bathrooms?: string | null;
+  half_bathrooms?: string | null;
   year_built?: string | null;
+  actual_age?: string | null;
   condition?: string | null;
   quality?: string | null;
   site_size?: string | null;
   view?: string | null;
   location?: string | null;
+  design_style?: string | null;
+  basement_area_sqft?: string | null;
+  basement_finished_sqft?: string | null;
+  basement_description?: string | null;
+  basement_finish?: string | null;
+  functional_utility?: string | null;
+  heating_cooling?: string | null;
+  energy_efficient?: string | null;
+  garage_carport?: string | null;
+  garage_spaces?: string | null;
+  carport_spaces?: string | null;
+  porch_deck?: string | null;
+  fireplaces?: string | null;
   net_adjustment?: string | null;
+  net_adjustment_percent?: string | null;
   gross_adjustment?: string | null;
+  gross_adjustment_percent?: string | null;
   adjusted_sale_price?: string | null;
 }
 
@@ -90,36 +115,82 @@ const gridFieldToComparableField: Partial<Record<GridRowAliasKey, GridComparable
   "comparables.sale_date": "sale_date",
   "comparables.adjusted_sale_price": "adjusted_sale_price",
   "comparables.sale_price": "sale_price",
+  "comparables.sales_price_per_gla": "sales_price_per_gla",
   "comparables.net_adjustment": "net_adjustment",
+  "comparables.net_adjustment_percent": "net_adjustment_percent",
   "comparables.gross_adjustment": "gross_adjustment",
+  "comparables.gross_adjustment_percent": "gross_adjustment_percent",
+  "comparables.property_rights": "property_rights",
+  "comparables.sales_concessions": "sales_concessions",
+  "comparables.financing_concessions": "financing_concessions",
+  "comparables.total_rooms": "total_rooms",
   "comparables.bedrooms": "bedrooms",
   "comparables.bathrooms": "bathrooms",
+  "comparables.full_bathrooms": "full_bathrooms",
+  "comparables.half_bathrooms": "half_bathrooms",
   "comparables.year_built": "year_built",
+  "comparables.actual_age": "actual_age",
   "comparables.site_size": "site_size",
   "comparables.view": "view",
-  "comparables.location": "location"
+  "comparables.location": "location",
+  "comparables.design_style": "design_style",
+  "comparables.basement_area_sqft": "basement_area_sqft",
+  "comparables.basement_finished_sqft": "basement_finished_sqft",
+  "comparables.basement_finish": "basement_finish",
+  "comparables.functional_utility": "functional_utility",
+  "comparables.heating_cooling": "heating_cooling",
+  "comparables.energy_efficient": "energy_efficient",
+  "comparables.garage_carport": "garage_carport",
+  "comparables.porch_deck": "porch_deck",
+  "comparables.fireplaces": "fireplaces"
 };
 
 const safeLabelOrder = [
+  "condition",
+  "quality",
+  "location",
+  "view",
+  "site",
+  "site size",
+  "property rights",
+  "sale or financing concessions",
+  "sale price",
+  "sales price",
+  "sales price per gross living area",
+  "sale date",
+  "date of sale",
+  "contract date",
   "gross living area",
   "gla",
   "above grade living area",
-  "condition",
-  "quality",
-  "actual age",
-  "year built",
-  "site",
-  "view",
-  "location",
-  "sale price",
-  "sale date",
-  "date of sale",
+  "rooms",
   "adjusted sale price",
   "net adjustment",
+  "net adjustment percent",
   "gross adjustment",
+  "gross adjustment percent",
   "room count",
+  "total room count",
   "bedrooms",
-  "bathrooms"
+  "bathrooms",
+  "full baths",
+  "half baths",
+  "actual age",
+  "year built",
+  "design",
+  "design style",
+  "basement",
+  "basement area",
+  "basement finish",
+  "functional utility",
+  "heating cooling",
+  "energy efficient",
+  "car storage",
+  "garage",
+  "garage carport",
+  "porch deck",
+  "fireplace",
+  "fireplaces"
 ];
 
 export function extractGridValues(root: XmlNode): GridExtractionResult {
@@ -257,17 +328,42 @@ export function mergeGridComparable(
   mergeField(comparable, grid, "condition", parserNotes, warnings);
   mergeField(comparable, grid, "quality", parserNotes, warnings);
   mergeField(comparable, grid, "gla_sqft", parserNotes, warnings);
+  mergeField(comparable, grid, "sales_price_per_gla", parserNotes, warnings);
   mergeField(comparable, grid, "sale_date", parserNotes, warnings);
+  mergeField(comparable, grid, "sale_date_raw", parserNotes, warnings);
+  mergeField(comparable, grid, "contract_date", parserNotes, warnings);
   mergeField(comparable, grid, "adjusted_sale_price", parserNotes, warnings);
   mergeField(comparable, grid, "sale_price", parserNotes, warnings);
   mergeField(comparable, grid, "net_adjustment", parserNotes, warnings);
+  mergeField(comparable, grid, "net_adjustment_percent", parserNotes, warnings);
   mergeField(comparable, grid, "gross_adjustment", parserNotes, warnings);
+  mergeField(comparable, grid, "gross_adjustment_percent", parserNotes, warnings);
+  mergeField(comparable, grid, "property_rights", parserNotes, warnings);
+  mergeField(comparable, grid, "sales_concessions", parserNotes, warnings);
+  mergeField(comparable, grid, "financing_concessions", parserNotes, warnings);
+  mergeField(comparable, grid, "total_rooms", parserNotes, warnings);
   mergeField(comparable, grid, "bedrooms", parserNotes, warnings);
   mergeField(comparable, grid, "bathrooms", parserNotes, warnings);
+  mergeField(comparable, grid, "full_bathrooms", parserNotes, warnings);
+  mergeField(comparable, grid, "half_bathrooms", parserNotes, warnings);
   mergeField(comparable, grid, "year_built", parserNotes, warnings);
+  mergeField(comparable, grid, "actual_age", parserNotes, warnings);
   mergeField(comparable, grid, "site_size", parserNotes, warnings);
   mergeField(comparable, grid, "view", parserNotes, warnings);
   mergeField(comparable, grid, "location", parserNotes, warnings);
+  mergeField(comparable, grid, "design_style", parserNotes, warnings);
+  mergeField(comparable, grid, "basement_area_sqft", parserNotes, warnings);
+  mergeField(comparable, grid, "basement_finished_sqft", parserNotes, warnings);
+  mergeField(comparable, grid, "basement_description", parserNotes, warnings);
+  mergeField(comparable, grid, "basement_finish", parserNotes, warnings);
+  mergeField(comparable, grid, "functional_utility", parserNotes, warnings);
+  mergeField(comparable, grid, "heating_cooling", parserNotes, warnings);
+  mergeField(comparable, grid, "energy_efficient", parserNotes, warnings);
+  mergeField(comparable, grid, "garage_carport", parserNotes, warnings);
+  mergeField(comparable, grid, "garage_spaces", parserNotes, warnings);
+  mergeField(comparable, grid, "carport_spaces", parserNotes, warnings);
+  mergeField(comparable, grid, "porch_deck", parserNotes, warnings);
+  mergeField(comparable, grid, "fireplaces", parserNotes, warnings);
 
   return { comparable, parserNotes, warnings };
 }
@@ -412,8 +508,33 @@ function convertGridValue(field: GridComparableField, value: string): string | n
   if (["sale_price", "adjusted_sale_price", "net_adjustment", "gross_adjustment"].includes(field)) {
     return normalizeCurrency(value);
   }
-  if (field === "gla_sqft") return normalizeSquareFeet(value);
-  if (["bedrooms", "bathrooms", "year_built"].includes(field)) return normalizeNumber(value);
+  if (
+    [
+      "gla_sqft",
+      "basement_area_sqft",
+      "basement_finished_sqft"
+    ].includes(field)
+  ) {
+    return normalizeSquareFeet(value);
+  }
+  if (
+    [
+      "sales_price_per_gla",
+      "bedrooms",
+      "bathrooms",
+      "full_bathrooms",
+      "half_bathrooms",
+      "total_rooms",
+      "year_built",
+      "actual_age",
+      "garage_spaces",
+      "carport_spaces",
+      "net_adjustment_percent",
+      "gross_adjustment_percent"
+    ].includes(field)
+  ) {
+    return normalizeNumber(value);
+  }
   if (field === "sale_date") return normalizeDate(value);
   return value;
 }
@@ -422,9 +543,21 @@ function sanitizeSafeProfileValue(rawValue: string, fields: GridRowAliasKey[]): 
   const value = rawValue.trim();
   if (!value || looksPrivate(value)) return null;
 
-  if (fields.some((field) => field.endsWith(".condition")) && /^C[1-6]$/i.test(value)) return value.toUpperCase();
-  if (fields.some((field) => field.endsWith(".quality")) && /^Q[1-6]$/i.test(value)) return value.toUpperCase();
-  if (fields.some((field) => field.includes("gla") || field.endsWith(".bedrooms") || field.endsWith(".bathrooms"))) {
+  if (fields.some((field) => field.endsWith(".condition")) && /^C[1-5]$/i.test(value)) return value.toUpperCase();
+  if (fields.some((field) => field.endsWith(".quality")) && /^Q[1-5]$/i.test(value)) return value.toUpperCase();
+  if (
+    fields.some(
+      (field) =>
+        field.includes("gla") ||
+        field.endsWith(".bedrooms") ||
+        field.endsWith(".bathrooms") ||
+        field.endsWith(".total_rooms") ||
+        field.endsWith(".actual_age") ||
+        field.includes("basement") ||
+        field.includes("garage") ||
+        field.includes("adjustment_percent")
+    )
+  ) {
     const numeric = value.match(/^\d{1,5}(?:\.\d+)?$/);
     if (numeric) return numeric[0];
   }
