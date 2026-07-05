@@ -3197,6 +3197,67 @@
       color: #334155;
       font-weight: 800;
     }
+    .simple-pick {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 14px;
+      align-items: center;
+      margin: 0 0 12px;
+      padding: 14px;
+      border: 2px solid #d9b06a;
+      border-radius: 6px;
+      background: #fff8e7;
+    }
+    .simple-pick.green {
+      border-color: #9bd1b5;
+      background: #f1fbf6;
+    }
+    .simple-pick.red {
+      border-color: #e6a0a4;
+      background: #fff3f3;
+    }
+    .simple-pick span,
+    .other-choice-box > summary {
+      color: #7b8796;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .simple-pick h3 {
+      margin: 3px 0 5px;
+      color: #1f2937;
+      font-size: 22px;
+      line-height: 1.12;
+    }
+    .simple-pick p {
+      margin: 0;
+      color: #334155;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .simple-pick button {
+      min-height: 56px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .other-choice-box {
+      margin: 0 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fafbfc;
+      overflow: hidden;
+    }
+    .other-choice-box > summary {
+      padding: 11px 12px;
+      cursor: pointer;
+    }
+    .other-choice-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 8px;
+      padding: 0 12px 12px;
+    }
     .primary-actions {
       margin-top: 10px;
     }
@@ -3321,6 +3382,7 @@
       .sort-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .review-action-summary,
       .plain-review-card,
+      .simple-pick,
       .decision-box-heading,
       .button-meaning-grid,
       .button-meaning-grid.red,
@@ -3328,6 +3390,7 @@
         grid-template-columns: 1fr;
       }
       .review-nav-buttons,
+      .other-choice-actions,
       .focused-decision-box .decision-actions {
         grid-template-columns: 1fr;
       }
@@ -4512,22 +4575,22 @@
       if (item.recommendation.level === 'red') {
         return {
           title: 'This one is not ready.',
-          body: 'It is missing important data. Do not approve it. Choose Needs Fix if it can be repaired. Choose Reject if it should not be used.',
+          body: 'It is missing important data. Click the big Needs Fix button unless you are sure this should never be used.',
           steps: [
-            'Look at the problems listed below.',
-            'Choose Needs Fix or Reject.',
-            'Write one short note saying why.'
+            'Use the big Needs Fix button.',
+            'Only use Reject if this should never be used.',
+            'You do not have to write a note; the button fills one in.'
           ]
         };
       }
       if (item.recommendation.level === 'yellow') {
         return {
           title: 'This one might be usable.',
-          body: `Check the ${approvals.length} thing${approvals.length === 1 ? '' : 's'} listed below. If every one is OK, approve it. If anything is wrong or missing, choose Needs Fix or Reject.`,
+          body: `If you are not completely sure, click the big Needs Fix button. Only approve after you check all ${approvals.length} thing${approvals.length === 1 ? '' : 's'} below.`,
           steps: [
-            'Read each thing to check.',
-            'Mark Yes only if it looks OK.',
-            'Approve only when every thing is checked.'
+            'When unsure, click Needs Fix.',
+            'Approve only after every thing is checked.',
+            'Reject only if this should never be used.'
           ]
         };
       }
@@ -4605,8 +4668,64 @@
       return `
         <div class="decision-helper">
           <span>Note rule</span>
-          <p>${isRed ? 'For Needs Fix or Reject, write one plain sentence. Example: Missing comps and final value, needs parser repair.' : 'If you approve, check every thing first. If you choose Needs Fix or Reject, write one plain sentence why.'}</p>
+          <p>${isRed ? 'You can leave the note box alone. The big Needs Fix button will add a basic note for you.' : 'If you are unsure, click the big Needs Fix button. It will add a basic note for you.'}</p>
         </div>
+      `;
+    }
+
+    function simplePick(item) {
+      const level = item.recommendation.level;
+      if (level === 'green') {
+        return {
+          tone: 'green',
+          label: 'Most likely click this',
+          title: 'Approve it if it looks normal.',
+          body: 'Use this case for training. If anything looks wrong, use Needs Fix instead.',
+          buttonClass: 'green',
+          buttonText: 'Click this: Approve - use this',
+          status: 'approved'
+        };
+      }
+      return {
+        tone: level === 'red' ? 'red' : 'yellow',
+        label: 'If you are not sure',
+        title: 'Click Needs Fix.',
+        body: 'This does not delete anything. It just saves the case for repair or another look later.',
+        buttonClass: 'yellow',
+        buttonText: 'Click this: Needs Fix - repair later',
+        status: 'needs_revision'
+      };
+    }
+
+    function simplePickPanel(item) {
+      const pick = simplePick(item);
+      return `
+        <div class="simple-pick ${escape(pick.tone)}">
+          <div>
+            <span>${escape(pick.label)}</span>
+            <h3>${escape(pick.title)}</h3>
+            <p>${escape(pick.body)}</p>
+          </div>
+          <button class="${escape(pick.buttonClass)}" onclick="quickDecision('${escape(pick.status)}')">${escape(pick.buttonText)}</button>
+        </div>
+      `;
+    }
+
+    function otherChoices(item) {
+      const isRed = item.recommendation.level === 'red';
+      const approveChoice = isRed
+        ? ''
+        : '<button id="approveBtn" class="green" onclick="quickDecision(\'approved\')">Approve - use this</button>';
+      return `
+        <details class="other-choice-box">
+          <summary>Other choices</summary>
+          <div class="other-choice-actions">
+            ${approveChoice}
+            <button class="yellow" onclick="quickDecision('needs_revision')">Needs Fix - repair later</button>
+            <button class="red" onclick="quickDecision('rejected')">Reject - do not use</button>
+            <button onclick="quickDecision('skipped')">Skip - decide later</button>
+          </div>
+        </details>
       `;
     }
 
@@ -4649,23 +4768,17 @@
         <section class="decision-box focused-decision-box ${escape(item.recommendation.level)}">
           <div class="decision-box-heading">
             <div>
-              <span>Final decision</span>
-              <h2>${isRed ? 'Choose Needs Fix or Reject' : 'Choose one action for this case'}</h2>
+              <span>Decision</span>
+              <h2>What should I click?</h2>
             </div>
             <p>${escape(approvalDecisionContext(item, approvals))}</p>
           </div>
+          ${simplePickPanel(item)}
           ${decisionProblems(issues)}
           ${isRed ? '' : approvalStatementSummary(item.case_id, approvals)}
-          ${buttonMeaningGrid(isRed)}
           ${decisionHelper(isRed)}
-          <textarea id="notes" placeholder="${isRed ? 'Notes required. Say whether this needs parser/mapping repair or should be rejected.' : 'Notes required for Needs Fix or Reject. Notes are also required to approve yellow cases.'}">${escape(item.decision.notes || '')}</textarea>
-          ${noteTemplateButtons(isRed)}
-          <div class="decision-actions primary-actions ${isRed ? 'red-case-actions' : ''}">
-            ${isRed ? '' : '<button id="approveBtn" class="green" onclick="saveDecision(\'approved\')">Approve - use this (A)</button>'}
-            <button class="yellow" onclick="saveDecision('needs_revision')">Needs Fix - repair later (F)</button>
-            <button class="red" onclick="saveDecision('rejected')">Reject - do not use (R)</button>
-            <button onclick="saveDecision('skipped')">Skip - decide later (S)</button>
-          </div>
+          <textarea id="notes" placeholder="${isRed ? 'Optional: the big Needs Fix button will add a note for you.' : 'Optional: the big Needs Fix button will add a note for you.'}">${escape(item.decision.notes || '')}</textarea>
+          ${otherChoices(item)}
           ${isRed ? approvalOverridePanel(item.case_id, approvals) : ''}
           <p id="saveMsg" class="save-msg"></p>
         </section>
@@ -4990,6 +5103,27 @@
       notes.focus();
     }
 
+    function defaultDecisionNote(item, status) {
+      if (!item) return '';
+      if (status === 'needs_revision') {
+        if (item.recommendation.level === 'red') return 'Missing important data; needs repair.';
+        if (item.recommendation.level === 'yellow') return 'Needs another look or repair before approval.';
+        return 'Needs review or repair before approval.';
+      }
+      if (status === 'rejected') return 'Do not use this case for training.';
+      return '';
+    }
+
+    function quickDecision(status) {
+      const item = currentCase();
+      const notes = document.getElementById('notes');
+      if (notes && !notes.value.trim()) {
+        const defaultNote = defaultDecisionNote(item, status);
+        if (defaultNote) notes.value = defaultNote;
+      }
+      saveDecision(status);
+    }
+
     function toggleApprovalConfirmation(input) {
       const caseId = input.dataset.caseId || '';
       const title = input.dataset.approvalTitle || '';
@@ -5192,11 +5326,11 @@
       const key = e.key.toLowerCase();
       if (activeView === 'review' && key === 'a') {
         const approveBtn = document.getElementById('approveBtn');
-        if (approveBtn && !approveBtn.disabled) saveDecision('approved');
+        if (approveBtn && !approveBtn.disabled) quickDecision('approved');
       }
-      if (activeView === 'review' && key === 'f') saveDecision('needs_revision');
-      if (activeView === 'review' && key === 'r') saveDecision('rejected');
-      if (activeView === 'review' && key === 's') saveDecision('skipped');
+      if (activeView === 'review' && key === 'f') quickDecision('needs_revision');
+      if (activeView === 'review' && key === 'r') quickDecision('rejected');
+      if (activeView === 'review' && key === 's') quickDecision('skipped');
       if (key === 'q') toggleQueue();
       if (key === 'n') move(1);
       if (key === 'p') move(-1);
